@@ -5,7 +5,7 @@ import json
 
 app = Flask(__name__)
 
-with open('../video.json', 'r') as file:
+with open('./video.json', 'r') as file:
     urls = json.load(file)
 
 #home
