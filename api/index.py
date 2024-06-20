@@ -1,7 +1,6 @@
-from flask import Flask, Response
+from flask import Flask, Response, stream_with_context
 import random
 import requests
-import json
 
 app = Flask(__name__)
 
@@ -15,7 +14,7 @@ IronMan = [
 def home():
     return 'API is running somewhere!'
 
-#vidoe
+# Video
 @app.route('/video', methods=['GET'])
 def anime():
     video_url = random.choice(IronMan)
@@ -26,7 +25,7 @@ def anime():
                 if chunk:
                     yield chunk
     
-    return Response(generate(), content_type='video/mp4')
+    return Response(stream_with_context(generate()), content_type='video/mp4', headers={"Access-Control-Allow-Origin": "*"})
 
 if __name__ == '__main__':
-    app.run(port=3000)
+    app.run(port=3000, debug=True)
