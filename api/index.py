@@ -1,13 +1,14 @@
 from flask import Flask, Response, stream_with_context
 import random
 import requests
+import json
 
 app = Flask(__name__)
 
-IronMan = [
-    "https://aemt.me/file/1wyRPkzAYgts.mp4",
-    "https://i.imgur.com/8QiXNLt.mp4"
-]
+def load_video_urls():
+    with open('video.json') as f:
+        data = json.load(f)
+    return data["IronMan"]
 
 # Home 
 @app.route('/')
@@ -17,7 +18,8 @@ def home():
 # Video
 @app.route('/video', methods=['GET'])
 def anime():
-    video_url = random.choice(IronMan)
+    video_urls = load_video_urls()
+    video_url = random.choice(video_urls)
     
     def generate():
         with requests.get(video_url, stream=True) as r:
