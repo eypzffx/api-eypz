@@ -5,26 +5,26 @@ import json
 
 app = Flask(__name__)
 
-"""
-with open('./video.json', 'r') as file:
-    urls = json.load(file)
-"""
+with open('video.json', 'r') as f:
+    video_urls = json.load(f)
 
 #home
 @app.route('/')
 def home():
-    return 'Api is running somewhere!'
+    return 'API is running somewhere!'
 
-"""
-#random videos    
-@app.route('/videos', methods=['GET'])
-def video():
-    selected_url = random.choice(urls)
-    response = requests.get(selected_url, stream=True)
-    return Response(response.iter_content(chunk_size=1024), content_type=response.headers['content-type'])
+#vidoe 
+@app.route('/video', methods=['GET'])
+def anime():
+    video_url = random.choice(video_urls)
+    
+    def generate():
+        with requests.get(video_url, stream=True) as r:
+            for chunk in r.iter_content(chunk_size=8192):
+                if chunk:
+                    yield chunk
+    
+    return Response(generate(), content_type='video/mp4')
 
-"""
-
-#dont touch this thing
 if __name__ == '__main__':
     app.run(port=3000)
