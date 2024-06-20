@@ -6,8 +6,40 @@ import json
 app = Flask(__name__)
 
 IronMan = [
-    "https://cdn.discordapp.com/attachments/947033103988314143/1252355487706648710/VID-20240608-WA0044.mp4?ex=6671ea6f&is=667098ef&hm=a702c6325ed8e2df64956861c33495ca1ba90340e946735ecb91c2b29c705384&",
-    "https://cdn.discordapp.com/attachments/947033103988314143/1252360857946689717/20240418152629633.mp4?ex=6671ef70&is=66709df0&hm=2ec880e4f4c18631dcf189c273c4c928173eaf8a9c9f96ca7c01b30955cab9bf&"
+  "https://i.imgur.com/wVHPACz.mp4",
+  "https://i.imgur.com/NErSHY5.mp4",
+  "https://i.imgur.com/CUZf2Cf.mp4",
+  "https://i.imgur.com/WqckfnX.mp4",
+  "https://i.imgur.com/Z2cwsrz.mp4",
+  "https://i.imgur.com/5gL4cZo.mp4",
+  "https://i.imgur.com/ZLkPIsY.mp4",
+  "https://i.imgur.com/kLedgdR.mp4",
+  "https://i.imgur.com/KUGRx8b.mp4",
+  "https://i.imgur.com/h1UKkcP.mp4",
+  "https://i.imgur.com/nWJdaGX.mp4",
+  "https://i.imgur.com/vdxn09c.mp4",
+  "https://i.imgur.com/fb1VAlr.mp4",
+  "https://i.imgur.com/bheqlD7.mp4",
+  "https://i.imgur.com/uWhr4iL.mp4",
+  "https://i.imgur.com/zGzFerK.mp4",
+  "https://i.imgur.com/3Cv02cz.mp4",
+  "https://i.imgur.com/LHW3T60.mp4",
+  "https://i.imgur.com/IUtst5x.mp4",
+  "https://i.imgur.com/M4rX4PB.mp4",
+  "https://i.imgur.com/sO3pNoF.mp4",
+  "https://i.imgur.com/RHTIEKB.mp4",
+  "https://i.imgur.com/P7NEpNd.mp4",
+  "https://i.imgur.com/k4HVHC9.mp4",
+  "https://i.imgur.com/gnd5eGE.mp4",
+  "https://i.imgur.com/JBoRyy6.mp4",
+  "https://i.imgur.com/aF8x8zb.mp4",
+  "https://i.imgur.com/3rNFcgE.mp4",
+  "https://i.imgur.com/9ec6N3l.mp4",
+  "https://i.imgur.com/iERiqLB.mp4",
+  "https://i.imgur.com/WK62Btn.mp4",
+  "https://i.imgur.com/PsbcOF9.mp4",
+  "https://i.imgur.com/0Ysn9Ol.mp4",
+  "https://i.imgur.com/1D4a8Fj.mp4"
 ]
 
 # Home 
