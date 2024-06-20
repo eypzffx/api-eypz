@@ -5,7 +5,7 @@ import json
 
 app = Flask(__name__)
 
-IronMan = [
+Eypz = [
   "https://i.imgur.com/wVHPACz.mp4",
   "https://i.imgur.com/NErSHY5.mp4",
   "https://i.imgur.com/CUZf2Cf.mp4",
@@ -50,7 +50,7 @@ def home():
 #vidoe
 @app.route('/video', methods=['GET'])
 def anime():
-    video_url = random.choice(IronMan)
+    video_url = random.choice(Eypz)
     
     def generate():
         with requests.get(video_url, stream=True) as r:
