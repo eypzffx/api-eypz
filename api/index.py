@@ -23,13 +23,13 @@ def anime():
     def generate():
         try:
             with requests.get(video_url, stream=True) as r:
-                r.raise_for_status()  
+                r.raise_for_status()
                 for chunk in r.iter_content(chunk_size=8192):
                     if chunk:
                         yield chunk
         except requests.RequestException as e:
             print(f"Error fetching video: {e}")
-            yield b'' 
+            yield b''
 
     return Response(generate(), content_type='video/mp4')
 
