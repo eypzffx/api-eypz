@@ -1,4 +1,4 @@
-from flask import Flask, Response, jsonify
+from flask import Flask, Response
 import random
 import requests
 
@@ -18,17 +18,20 @@ def home():
 @app.route('/video', methods=['GET'])
 def anime():
     video_url = random.choice(eypz)
-    print(f"Selected video URL: {video_url}")
+    app.logger.info(f"Selected video URL: {video_url}")
 
     def generate():
         try:
             with requests.get(video_url, stream=True) as r:
                 r.raise_for_status()
+                content_length = r.headers.get('Content-Length')
+                app.logger.info(f"Content-Length: {content_length}")
+                
                 for chunk in r.iter_content(chunk_size=8192):
                     if chunk:
                         yield chunk
         except requests.RequestException as e:
-            print(f"Error fetching video: {e}")
+            app.logger.error(f"Error fetching video: {e}")
             yield b''
 
     return Response(generate(), content_type='video/mp4')
