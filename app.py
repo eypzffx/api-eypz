@@ -5,7 +5,7 @@ import random
 app = Flask(__name__)
 
 # Define the directory where your video files are stored
-VIDEO_DIRECTORY = os.path.join(os.getcwd(), 'videos')
+VIDEO_DIRECTORY = os.path.join(os.getcwd(), 'video')
 
 # List all video files in the VIDEO_DIRECTORY
 video_files = os.listdir(VIDEO_DIRECTORY)
