@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: Izumi
+    name: eypz-api
     env: docker
     branch: main
     repo: https://github.com/akshay-god01/api.git
