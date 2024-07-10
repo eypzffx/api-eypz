@@ -4,11 +4,13 @@ import random
 
 app = Flask(__name__)
 
-# Define the directory where your video files are stored
+# Define the directories where your video and image files are stored
 VIDEO_DIRECTORY = os.path.join(os.getcwd(), 'video')
+IMAGE_DIRECTORY = os.path.join(os.getcwd(), 'images')
 
-# List all video files in the VIDEO_DIRECTORY
+# List all video and image files in their respective directories
 video_files = os.listdir(VIDEO_DIRECTORY)
+image_files = os.listdir(IMAGE_DIRECTORY)
 
 @app.route('/anime', methods=['GET'])
 def serve_random_video():
@@ -18,6 +20,17 @@ def serve_random_video():
         return send_from_directory(VIDEO_DIRECTORY, random_video)
     except IndexError:
         return "No videos found", 404
+    except Exception as e:
+        return str(e), 500
+
+@app.route('/image', methods=['GET'])
+def serve_random_image():
+    try:
+        # Choose a random image file from the list
+        random_image = random.choice(image_files)
+        return send_from_directory(IMAGE_DIRECTORY, random_image)
+    except IndexError:
+        return "No images found", 404
     except Exception as e:
         return str(e), 500
 
