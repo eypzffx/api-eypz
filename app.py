@@ -6,7 +6,7 @@ app = Flask(__name__)
 
 # Define the directories where your video and image files are stored
 VIDEO_DIRECTORY = os.path.join(os.getcwd(), 'video')
-IMAGE_DIRECTORY = os.path.join(os.getcwd(), 'images')
+IMAGE_DIRECTORY = os.path.join(os.getcwd(), 'image')
 
 # List all video and image files in their respective directories
 video_files = os.listdir(VIDEO_DIRECTORY)
