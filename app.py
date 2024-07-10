@@ -4,15 +4,15 @@ import random
 
 app = Flask(__name__)
 
-# Define the directories where your video and image files are stored
+# Define the directories where your video, image, and tsunade files are stored
 VIDEO_DIRECTORY = os.path.join(os.getcwd(), 'video')
 IMAGE_DIRECTORY = os.path.join(os.getcwd(), 'image')
-Tsunade = os.path.join(os.getcwd(), 'tsunade')
+TSUNADE_DIRECTORY = os.path.join(os.getcwd(), 'tsunade')
 
-# List all video and image files in their respective directories
+# List all video, image, and tsunade files in their respective directories
 video_files = os.listdir(VIDEO_DIRECTORY)
 image_files = os.listdir(IMAGE_DIRECTORY)
-Tsunade_files = os.listdir(Tsunade)
+tsunade_files = os.listdir(TSUNADE_DIRECTORY)
 
 @app.route('/anime', methods=['GET'])
 def serve_random_video():
@@ -36,17 +36,14 @@ def serve_random_image():
     except Exception as e:
         return str(e), 500
 
-if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5000)
-
 @app.route('/tsunade', methods=['GET'])
 def serve_random_tsunade():
     try:
-        # Choose a random image file from the list
-        random_tsunade = random.choice(Tsunade_files)
-        return send_from_directory(Tsunade, random_tsunade)
+        # Choose a random tsunade file from the list
+        random_tsunade = random.choice(tsunade_files)
+        return send_from_directory(TSUNADE_DIRECTORY, random_tsunade)
     except IndexError:
-        return "No images found", 404
+        return "No tsunade images found", 404
     except Exception as e:
         return str(e), 500
 
