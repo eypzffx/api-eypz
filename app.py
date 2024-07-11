@@ -5,17 +5,19 @@ import json
 
 app = Flask(__name__)
 
-# Define the directories where your video and image files are stored
+# Define the directories where your video, image, and cat files are stored
 VIDEO_DIRECTORY = os.path.join(os.getcwd(), 'video')
 IMAGE_DIRECTORY = os.path.join(os.getcwd(), 'image')
 TSUNADE_DIRECTORY = os.path.join(os.getcwd(), 'tsunade')
 NARUTO_DIRECTORY = os.path.join(os.getcwd(), 'naruto')
+CAT_DIRECTORY = os.path.join(os.getcwd(), 'cat')  # Directory for cat images
 
-# List all video and image files in their respective directories
+# List all video, image, and cat files in their respective directories
 video_files = os.listdir(VIDEO_DIRECTORY)
 image_files = os.listdir(IMAGE_DIRECTORY)
 tsunade_files = os.listdir(TSUNADE_DIRECTORY)
 naruto_files = os.listdir(NARUTO_DIRECTORY)
+cat_files = os.listdir(CAT_DIRECTORY)  # List of cat image files
 
 # Load cat facts from JSON file in the 'chat' folder
 json_path = os.path.join(os.getcwd(), 'chat', 'cat_fact.json')
@@ -64,6 +66,16 @@ def serve_random_naruto():
         return send_from_directory(NARUTO_DIRECTORY, random_naruto)
     except IndexError:
         return "No Naruto images found", 404
+    except Exception as e:
+        return str(e), 500
+
+@app.route('/cat', methods=['GET'])
+def serve_random_cat():
+    try:
+        random_cat = random.choice(cat_files)
+        return send_from_directory(CAT_DIRECTORY, random_cat)
+    except IndexError:
+        return "No cat images found", 404
     except Exception as e:
         return str(e), 500
 
