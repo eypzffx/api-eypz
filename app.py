@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify, send_from_directory, send_file
 import os
 import random
+import json
 
 app = Flask(__name__)
 
@@ -15,6 +16,11 @@ video_files = os.listdir(VIDEO_DIRECTORY)
 image_files = os.listdir(IMAGE_DIRECTORY)
 tsunade_files = os.listdir(TSUNADE_DIRECTORY)
 naruto_files = os.listdir(NARUTO_DIRECTORY)
+
+# Load cat facts from JSON file
+with open('cat_fact.json', 'r') as f:
+    cat_data = json.load(f)
+    cat_facts = cat_data['facts']
 
 @app.route('/')
 def home():
@@ -46,7 +52,7 @@ def serve_random_tsunade():
         random_tsunade = random.choice(tsunade_files)
         return send_from_directory(TSUNADE_DIRECTORY, random_tsunade)
     except IndexError:
-        return "No tsunade images found", 404
+        return "No Tsunade images found", 404
     except Exception as e:
         return str(e), 500
 
@@ -56,7 +62,17 @@ def serve_random_naruto():
         random_naruto = random.choice(naruto_files)
         return send_from_directory(NARUTO_DIRECTORY, random_naruto)
     except IndexError:
-        return "No naruto images found", 404
+        return "No Naruto images found", 404
+    except Exception as e:
+        return str(e), 500
+
+@app.route('/cat-fact', methods=['GET'])
+def get_random_cat_fact():
+    try:
+        random_fact = random.choice(cat_facts)
+        return jsonify({'fact': random_fact})
+    except IndexError:
+        return "No cat facts found", 404
     except Exception as e:
         return str(e), 500
 
