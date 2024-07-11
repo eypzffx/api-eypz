@@ -1,7 +1,6 @@
 from flask import Flask, request, jsonify, send_from_directory
 import os
 import random
-import openai
 
 app = Flask(__name__)
 
@@ -9,11 +8,13 @@ app = Flask(__name__)
 VIDEO_DIRECTORY = os.path.join(os.getcwd(), 'video')
 IMAGE_DIRECTORY = os.path.join(os.getcwd(), 'image')
 TSUNADE_DIRECTORY = os.path.join(os.getcwd(), 'tsunade')
+NARUTO_DIRECTORY = os.path.join(os.getcwd(), 'naruto')
 
 # List all video and image files in their respective directories
 video_files = os.listdir(VIDEO_DIRECTORY)
 image_files = os.listdir(IMAGE_DIRECTORY)
 tsunade_files = os.listdir(TSUNADE_DIRECTORY)
+naruto_files = os.listdir(NARUTO_DIRECTORY)
 
 @app.route('/anime', methods=['GET'])
 def serve_random_video():
@@ -45,23 +46,15 @@ def serve_random_tsunade():
     except Exception as e:
         return str(e), 500
 
-@app.route('/chat', methods=['POST'])
-def chat():
-    data = request.get_json()
-    if 'message' not in data:
-        return jsonify({'error': 'No message provided'}), 400
-    
-    message = data['message']
-    
+@app.route('/naruto', methods=['GET'])
+def serve_random_naruto():
     try:
-        response = openai.Completion.create(
-            engine="text-davinci-003",
-            prompt=message,
-            max_tokens=50
-        )
-        return jsonify({'response': response.choices[0].text.strip()})
+        random_naruto = random.choice(naruto_files)
+        return send_from_directory(NARUTO_DIRECTORY, random_naruto)
+    except IndexError:
+        return "No naruto images found", 404
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        return str(e), 500
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000)
