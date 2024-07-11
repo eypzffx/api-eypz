@@ -17,8 +17,9 @@ image_files = os.listdir(IMAGE_DIRECTORY)
 tsunade_files = os.listdir(TSUNADE_DIRECTORY)
 naruto_files = os.listdir(NARUTO_DIRECTORY)
 
-# Load cat facts from JSON file
-with open('cat_fact.json', 'r') as f:
+# Load cat facts from JSON file in the 'chat' folder
+json_path = os.path.join(os.getcwd(), 'chat', 'cat_fact.json')
+with open(json_path, 'r') as f:
     cat_data = json.load(f)
     cat_facts = cat_data['facts']
 
