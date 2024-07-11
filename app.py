@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify, send_from_directory, send_file
 import os
 import random
 
@@ -15,6 +15,10 @@ video_files = os.listdir(VIDEO_DIRECTORY)
 image_files = os.listdir(IMAGE_DIRECTORY)
 tsunade_files = os.listdir(TSUNADE_DIRECTORY)
 naruto_files = os.listdir(NARUTO_DIRECTORY)
+
+@app.route('/')
+def home():
+    return send_file('index.html')
 
 @app.route('/anime', methods=['GET'])
 def serve_random_video():

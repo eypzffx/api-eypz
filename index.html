@@ -3,71 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome to Eypz API</title>
+    <title>Eypz API</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            line-height: 1.6;
-            background-color: #f0f0f0;
-            padding: 20px;
             text-align: center;
-        }
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            background-color: #f0f0f0;
         }
         h1 {
             color: #333;
         }
-        p {
-            color: #666;
+        .container {
+            margin: 50px auto;
+            max-width: 600px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
         }
-        .btn {
-            display: inline-block;
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .loading-text {
+            font-size: 24px;
+        }
+        .show {
+            opacity: 1;
+        }
+        .section {
+            margin-top: 30px;
+            text-align: left;
+        }
+        .button {
             padding: 10px 20px;
-            margin: 10px;
-            background-color: #007bff;
-            color: #fff;
             text-decoration: none;
+            color: #fff;
+            background-color: #007BFF;
             border-radius: 5px;
-            transition: background-color 0.3s ease;
-            cursor: pointer;
+            transition: background-color 0.3s;
+            display: inline-block;
+            margin-top: 10px;
         }
-        .btn:hover {
+        .button:hover {
             background-color: #0056b3;
-        }
-        .api-image {
-            max-width: 100%;
-            height: auto;
-            margin-top: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
     </style>
     <script>
-        function showComingSoon(button) {
-            button.innerText = 'Coming Soon';
-            button.classList.remove('btn');
-            button.classList.add('btn-disabled');
-            button.style.cursor = 'not-allowed';
-            button.removeAttribute('href');
-            button.removeAttribute('onclick');
-        }
+        document.addEventListener("DOMContentLoaded", function() {
+            // Simulate loading delay
+            setTimeout(function() {
+                document.querySelector('.container').classList.add('show');
+                document.querySelector('.loading').style.display = 'none';
+            }, 2000); // Adjust the delay time as needed
+        });
     </script>
 </head>
 <body>
+    <!-- Audio element added here -->
+    <audio autoplay>
+        <source src="https://izumi-web.vercel.app/audio/eypz.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <div class="loading">
+        <div class="loading-text">Welcome to Eypz API's</div>
+    </div>
     <div class="container">
         <h1>Welcome to Eypz API</h1>
-        <p>Explore what our API can do for you.</p>
-        <a href="https://api-eypz.onrender.com/image" class="btn">Image</a>
-        <a href="https://api-eypz.onrender.com/anime" class="btn">Video</a>
-        <a href="#" class="btn" onclick="showComingSoon(this)">Tsunade</a>
-        <a href="#" class="btn" onclick="showComingSoon(this)">NSFW</a>
-        <img src="https://api-eypz.onrender.com/image" alt="API Image" class="api-image">
+        
+        <div class="section">
+            <h2>Anime</h2>
+            <p>Random Anime videos</p>
+            <a href="https://api-eypz.onrender.com/anime" class="button">Get</a>
+        </div>
+        
+        <div class="section">
+            <h2>Naruto</h2>
+            <p>Random Naruto videos</p>
+            <a href="https://api-eypz.onrender.com/naruto" class="button">Get</a>
+        </div>
+        
+        <div class="section">
+            <h2>Tsunade</h2>
+            <p>Random Tsunade pics</p>
+            <a href="https://api-eypz.onrender.com/tsunade" class="button">Get</a>
+        </div>
+        
     </div>
 </body>
 </html>
