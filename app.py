@@ -13,6 +13,7 @@ IMAGE_DIRECTORY_IMAGE = os.path.join(os.getcwd(), 'images', 'image')
 IMAGE_DIRECTORY_CAT = os.path.join(os.getcwd(), 'images', 'cat')
 IMAGE_DIRECTORY_TSUNADE = os.path.join(os.getcwd(), 'images', 'tsunade')
 NSFW_WAIFU_FILE = os.path.join(os.getcwd(), 'nsfw', 'waifu.json')
+NSFW_NEKO_FILE = os.path.join(os.getcwd(), 'nsfw', 'neko.json')
 CAT_FACT_FILE = os.path.join(os.getcwd(), 'chat', 'cat_fact.json')
 DETAILS_FILE = os.path.join(os.getcwd(), 'chat', 'details.json')
 
@@ -45,6 +46,14 @@ def load_waifu_data():
     return waifu_data
 
 WAIFU_DATA = load_waifu_data()
+
+# Load NSFW neko data
+def load_neko_data():
+    with open(NSFW_NEKO_FILE, 'r') as f:
+        neko_data = json.load(f)
+    return neko_data
+
+NEKO_DATA = load_neko_data()
 
 # Root route to render index.html
 @app.route('/', methods=['GET'])
@@ -150,6 +159,17 @@ def serve_random_nsfw_waifu():
         return jsonify({"url": random_waifu})
     except IndexError:
         return "No NSFW waifu data found", 404
+    except Exception as e:
+        return str(e), 500
+
+# Route to serve random NSFW neko data
+@app.route('/nsfw/neko', methods=['GET'])
+def serve_random_nsfw_neko():
+    try:
+        random_neko = random.choice(NEKO_DATA)['url']
+        return jsonify({"url": random_neko})
+    except IndexError:
+        return "No NSFW neko data found", 404
     except Exception as e:
         return str(e), 500
 
