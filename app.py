@@ -12,6 +12,7 @@ VIDEO_DIRECTORY = os.path.join(os.getcwd(), 'videos', 'naruto')
 IMAGE_DIRECTORY_IMAGE = os.path.join(os.getcwd(), 'images', 'image')
 IMAGE_DIRECTORY_CAT = os.path.join(os.getcwd(), 'images', 'cat')
 IMAGE_DIRECTORY_TSUNADE = os.path.join(os.getcwd(), 'images', 'tsunade')
+NSFW_IMAGE_DIRECTORY = os.path.join(os.getcwd(), 'nsfw', 'hentai')
 CAT_FACT_FILE = os.path.join(os.getcwd(), 'chat', 'cat_fact.json')
 DETAILS_FILE = os.path.join(os.getcwd(), 'chat', 'details.json')
 
@@ -20,6 +21,7 @@ video_files = os.listdir(VIDEO_DIRECTORY)
 image_files_image = os.listdir(IMAGE_DIRECTORY_IMAGE)
 image_files_cat = os.listdir(IMAGE_DIRECTORY_CAT)
 image_files_tsunade = os.listdir(IMAGE_DIRECTORY_TSUNADE)
+image_files_nsfw = os.listdir(NSFW_IMAGE_DIRECTORY)
 
 # Load cat facts
 def load_cat_facts():
@@ -128,6 +130,17 @@ def download_youtube_thumbnail():
         return jsonify({'error': 'Missing URL parameter'}), 400
 
     return download_thumbnail(video_url)
+
+# Route to serve random NSFW image
+@app.route('/nsfw/image', methods=['GET'])
+def serve_random_nsfw_image():
+    try:
+        random_image = random.choice(image_files_nsfw)
+        return send_from_directory(NSFW_IMAGE_DIRECTORY, random_image)
+    except IndexError:
+        return "No NSFW images found", 404
+    except Exception as e:
+        return str(e), 500
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000)
