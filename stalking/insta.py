@@ -1,31 +1,34 @@
 # stalking/insta.py
 
-import requests
+import instaloader
 
 def get_instagram_profile(username):
+    L = instaloader.Instaloader()
+
     try:
-        url = f'https://www.instagram.com/{username}/?__a=1'
-        response = requests.get(url)
-        response.raise_for_status()
-        profile_data = response.json()
+        profile = instaloader.Profile.from_username(L.context, username)
+    except instaloader.exceptions.ProfileNotExistsException:
+        return None, "Profile does not exist"
+    except instaloader.exceptions.InstaloaderException as e:
+        return None, f"Failed to fetch profile: {str(e)}"
 
-        # Parse the profile data and extract relevant information
-        profile_info = {
-            'username': username,
-            'full_name': profile_data['graphql']['user']['full_name'],
-            'profile_pic_url': profile_data['graphql']['user']['profile_pic_url_hd'],
-            'biography': profile_data['graphql']['user']['biography'],
-            'follower_count': profile_data['graphql']['user']['edge_followed_by']['count'],
-            'following_count': profile_data['graphql']['user']['edge_follow']['count']
-            # Add more fields as needed
-        }
+    # Debug prints to check what profile object contains
+    print(f"Username: {profile.username}")
+    print(f"Full Name: {profile.full_name}")
+    print(f"Biography: {profile.biography}")
+    print(f"Followers: {profile.followers}")
+    print(f"Following: {profile.followees}")
+    print(f"Posts: {profile.mediacount}")
+    print(f"Profile Pic URL: {profile.profile_pic_url}")
 
-        return profile_info, None
+    profile_info = {
+        'username': profile.username,
+        'full_name': profile.full_name,
+        'biography': profile.biography,  # Include biography field
+        'followers_count': profile.followers,
+        'following_count': profile.followees,
+        'post_count': profile.mediacount,
+        'profile_pic_url': profile.profile_pic_url
+    }
 
-    except requests.exceptions.HTTPError as http_err:
-        error_message = f"HTTP error occurred: {http_err}"
-        return None, error_message
-
-    except Exception as err:
-        error_message = f"An error occurred: {err}"
-        return None, error_message
+    return profile_info, None
