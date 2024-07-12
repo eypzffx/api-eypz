@@ -1,18 +1,25 @@
 import requests
-from bs4 import BeautifulSoup
+import re
 
-def get_youtube_thumbnail(video_url):
+def download_thumbnail(video_url):
+    video_id = extract_video_id(video_url)
+    if not video_id:
+        return {'error': 'Invalid YouTube URL'}, 400
+
+    thumbnail_url = f'https://img.youtube.com/vi/{video_id}/maxresdefault.jpg'
+
     try:
-        response = requests.get(video_url)
-        if response.status_code != 200:
-            return None, 'Failed to fetch video page'
-        
-        soup = BeautifulSoup(response.content, 'html.parser')
-        thumbnail_url = soup.find('meta', property='og:image')['content']
-        
-        if not thumbnail_url:
-            return None, 'Failed to fetch thumbnail'
-        
-        return thumbnail_url, None
+        response = requests.get(thumbnail_url)
+        if response.status_code == 200:
+            return response.content, 200, {'Content-Type': 'image/jpeg'}
+        else:
+            return {'error': 'Failed to fetch thumbnail'}, 500
     except Exception as e:
-        return None, str(e)
+        return {'error': str(e)}, 500
+
+def extract_video_id(url):
+    regex = r"(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})"
+    match = re.search(regex, url)
+    if match:
+        return match.group(1)
+    return None
