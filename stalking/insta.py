@@ -1,36 +1,31 @@
+# stalking/insta.py
+
 import requests
-from bs4 import BeautifulSoup
 
 def get_instagram_profile(username):
-    url = f'https://www.instagram.com/{username}/'
-    headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
-    }
-
     try:
-        response = requests.get(url, headers=headers)
-        if response.status_code != 200:
-            return None, 'Failed to fetch profile page'
+        url = f'https://www.instagram.com/{username}/?__a=1'
+        response = requests.get(url)
+        response.raise_for_status()
+        profile_data = response.json()
 
-        soup = BeautifulSoup(response.content, 'html.parser')
-        script_tag = soup.find('script', string=lambda t: t and 'window._sharedData' in t)
-
-        if not script_tag:
-            return None, 'Failed to find shared data script tag'
-
-        shared_data = script_tag.string.split('window._sharedData = ')[1].rstrip(';')
-        data = json.loads(shared_data)
-        user_info = data['entry_data']['ProfilePage'][0]['graphql']['user']
-
+        # Parse the profile data and extract relevant information
         profile_info = {
-            'username': user_info['username'],
-            'full_name': user_info['full_name'],
-            'bio': user_info['biography'],
-            'followers': user_info['edge_followed_by']['count'],
-            'following': user_info['edge_follow']['count'],
-            'posts': user_info['edge_owner_to_timeline_media']['count'],
-            'profile_pic_url': user_info['profile_pic_url_hd']
+            'username': username,
+            'full_name': profile_data['graphql']['user']['full_name'],
+            'profile_pic_url': profile_data['graphql']['user']['profile_pic_url_hd'],
+            'biography': profile_data['graphql']['user']['biography'],
+            'follower_count': profile_data['graphql']['user']['edge_followed_by']['count'],
+            'following_count': profile_data['graphql']['user']['edge_follow']['count']
+            # Add more fields as needed
         }
+
         return profile_info, None
-    except Exception as e:
-        return None, str(e)
+
+    except requests.exceptions.HTTPError as http_err:
+        error_message = f"HTTP error occurred: {http_err}"
+        return None, error_message
+
+    except Exception as err:
+        error_message = f"An error occurred: {err}"
+        return None, error_message
