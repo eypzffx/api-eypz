@@ -106,16 +106,17 @@ def get_random_fact(category):
     except Exception as e:
         return str(e), 500
 
+# Instagram profile route
 @app.route('/insta', methods=['GET'])
 def get_insta_profile():
     username = request.args.get('username')
     if not username:
         return jsonify({'error': 'Missing username parameter'}), 400
-    
+
     profile_info, error = get_instagram_profile(username)
     if error:
         return jsonify({'error': error}), 500
-    
+
     return jsonify(profile_info)
 
 if __name__ == "__main__":
