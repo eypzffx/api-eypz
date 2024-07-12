@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, send_from_directory
+from flask import Flask, jsonify, send_from_directory, render_template
 import os
 import random
 import json
@@ -36,6 +36,11 @@ def load_details():
 
 # Load details from JSON file
 DETAILS = load_details()
+
+@app.route('/', methods=['GET'])
+def index():
+    # Render the index.html template
+    return render_template('index.html')
 
 @app.route('/naruto', methods=['GET'])
 def serve_random_naruto_video():
