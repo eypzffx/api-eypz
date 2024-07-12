@@ -1,7 +1,9 @@
-from flask import Flask, jsonify, send_from_directory, render_template
+from flask import Flask, jsonify, send_from_directory, render_template, request
 import os
 import random
 import json
+import requests
+import re
 
 app = Flask(__name__)
 
@@ -104,6 +106,35 @@ def get_random_fact(category):
         return f"No facts found for category '{category}'", 404
     except Exception as e:
         return str(e), 500
+
+@app.route('/download_thumbnail', methods=['GET'])
+def download_thumbnail():
+    video_url = request.args.get('url')
+    if not video_url:
+        return jsonify({'error': 'Missing URL parameter'}), 400
+
+    video_id = extract_video_id(video_url)
+    if not video_id:
+        return jsonify({'error': 'Invalid YouTube URL'}), 400
+
+    thumbnail_url = f'https://img.youtube.com/vi/{video_id}/maxresdefault.jpg'
+
+    try:
+        response = requests.get(thumbnail_url)
+        if response.status_code == 200:
+            return response.content, 200, {'Content-Type': 'image/jpeg'}
+        else:
+            return jsonify({'error': 'Failed to fetch thumbnail'}), 500
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+def extract_video_id(url):
+    # Regular expression to extract video ID from YouTube URL
+    regex = r"(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})"
+    match = re.search(regex, url)
+    if match:
+        return match.group(1)
+    return None
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000)
