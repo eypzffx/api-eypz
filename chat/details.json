@@ -1,0 +1,23 @@
+{
+    "animals": [
+        "Honey never spoils.",
+        "A group of flamingos is called a 'flamboyance'.",
+        "Octopuses have three hearts.",
+        "Wombat poop is cube-shaped."
+    ],
+    "space": [
+        "There are more stars in the universe than grains of sand on all the Earth's beaches.",
+        "A day on Venus is longer than a year on Venus.",
+        "A bolt of lightning contains enough energy to toast 100,000 slices of bread."
+    ],
+    "history": [
+        "The inventor of the Frisbee was turned into a Frisbee after he died.",
+        "Napoleon was once attacked by a horde of bunnies.",
+        "Cleopatra lived closer in time to the Moon landing than to the construction of the Great Pyramid."
+    ],
+    "technology": [
+        "The first computer virus was created in 1983.",
+        "The first 1GB hard drive was announced in 1980, which weighed over 500 pounds and cost $40,000.",
+        "More people have mobile phones than toilets."
+    ]
+}
