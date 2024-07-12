@@ -2,12 +2,7 @@ from flask import Flask, jsonify, send_from_directory, render_template, request
 import os
 import random
 import json
-import requests
-from bs4 import BeautifulSoup
-
-# Import the Instagram profile fetching function and YouTube thumbnail fetching function
-from stalking.insta import get_instagram_profile
-from stalking.youtube import get_youtube_thumbnail
+from stalking.insta import get_instagram_profile  # Import Instagram profile fetching function
 
 app = Flask(__name__)
 
@@ -110,18 +105,6 @@ def get_random_fact(category):
         return f"No facts found for category '{category}'", 404
     except Exception as e:
         return str(e), 500
-
-@app.route('/download_thumbnail', methods=['GET'])
-def download_thumbnail():
-    video_url = request.args.get('url')
-    if not video_url:
-        return jsonify({'error': 'Missing video URL parameter'}), 400
-    
-    thumbnail_url, error = get_youtube_thumbnail(video_url)
-    if error:
-        return jsonify({'error': error}), 500
-    
-    return jsonify({'thumbnail_url': thumbnail_url})
 
 @app.route('/insta', methods=['GET'])
 def get_insta_profile():
