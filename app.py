@@ -4,9 +4,14 @@ import random
 import json
 import lyricsgenius
 from stalking.insta import get_instagram_profile
-from stalking.youtube import download_thumbnail  # Import YouTube functions
+from stalking.youtube import download_thumbnail
+from info.weather import get_weather  # Import the weather function
+from info.crypto import get_crypto    # Import the crypto function
 
 app = Flask(__name__)
+
+# Initialize Genius API
+genius = lyricsgenius.Genius("UCPfLPaO-yEFTrzwgxsNgPN0JaZr8rUnWhLXjA4w5WmUP9rFp1ueGXPPcRqW6Jsa")
 
 # Define directories for static files
 VIDEO_DIRECTORY = os.path.join(os.getcwd(), 'videos', 'naruto')
@@ -55,12 +60,6 @@ def load_neko_data():
     return neko_data
 
 NEKO_DATA = load_neko_data()
-
-# Replace 'your_genius_api_token_here' with your actual Genius API token
-GENIUS_API_TOKEN = 'UCPfLPaO-yEFTrzwgxsNgPN0JaZr8rUnWhLXjA4w5WmUP9rFp1ueGXPPcRqW6Jsa'
-
-# Initialize Genius client
-genius = lyricsgenius.Genius(GENIUS_API_TOKEN)
 
 # Root route to render index.html
 @app.route('/', methods=['GET'])
@@ -179,6 +178,16 @@ def serve_random_nsfw_neko():
         return "No NSFW neko data found", 404
     except Exception as e:
         return str(e), 500
+
+# Weather route
+@app.route('/info/weather', methods=['GET'])
+def info_weather():
+    return get_weather()
+
+# Crypto route
+@app.route('/info/crypto', methods=['GET'])
+def info_crypto():
+    return get_crypto()
 
 # Route to fetch song lyrics from Genius API
 @app.route('/lyrics', methods=['GET'])
