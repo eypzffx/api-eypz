@@ -136,17 +136,18 @@ def download_youtube_thumbnail():
     if not video_url:
         return jsonify({'error': 'Missing URL parameter'}), 400
 
-    return download_thumbnail(video_url)
+    thumbnail_url, error = download_thumbnail(video_url)
+    if error:
+        return jsonify({'error': error}), 500
+
+    return jsonify({'thumbnail_url': thumbnail_url})
 
 # Route to serve random NSFW wet data
 @app.route('/nsfw/wet', methods=['GET'])
 def serve_random_nsfw_wet():
     try:
-        random_wet = random.choice(WET_DATA)
-        return jsonify({
-            "result": random_wet,
-            "creator": "Eypz"
-        })
+        random_wet = random.choice(WET_DATA)['url']
+        return jsonify({"url": random_wet})
     except IndexError:
         return "No NSFW wet data found", 404
     except Exception as e:
