@@ -1,6 +1,7 @@
 blinker==1.8.2
 certifi==2024.7.4
 charset-normalizer==3.3.2
+lyricsgenius==3.0.1
 click==8.1.7
 Flask==3.0.3
 idna==3.7
