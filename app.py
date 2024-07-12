@@ -2,6 +2,7 @@ from flask import Flask, jsonify, send_from_directory, render_template, request
 import os
 import random
 import json
+import lyricsgenius
 from stalking.insta import get_instagram_profile
 from stalking.youtube import download_thumbnail  # Import YouTube functions
 
@@ -54,6 +55,12 @@ def load_neko_data():
     return neko_data
 
 NEKO_DATA = load_neko_data()
+
+# Replace 'your_genius_api_token_here' with your actual Genius API token
+GENIUS_API_TOKEN = 'UCPfLPaO-yEFTrzwgxsNgPN0JaZr8rUnWhLXjA4w5WmUP9rFp1ueGXPPcRqW6Jsa'
+
+# Initialize Genius client
+genius = lyricsgenius.Genius(GENIUS_API_TOKEN)
 
 # Root route to render index.html
 @app.route('/', methods=['GET'])
@@ -172,6 +179,28 @@ def serve_random_nsfw_neko():
         return "No NSFW neko data found", 404
     except Exception as e:
         return str(e), 500
+
+# Route to fetch song lyrics from Genius API
+@app.route('/lyrics', methods=['GET'])
+def get_lyrics():
+    query = request.args.get('q')
+
+    if not query:
+        return jsonify({'error': 'Missing query parameter `q`'}), 400
+
+    try:
+        song = genius.search_song(query)
+        if song:
+            response = {
+                'title': song.title,
+                'artist': song.artist,
+                'lyrics': song.lyrics
+            }
+            return jsonify(response)
+        else:
+            return jsonify({'error': 'Lyrics not found for the given query'}), 404
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000)
