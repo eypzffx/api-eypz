@@ -12,7 +12,7 @@ VIDEO_DIRECTORY = os.path.join(os.getcwd(), 'videos', 'naruto')
 IMAGE_DIRECTORY_IMAGE = os.path.join(os.getcwd(), 'images', 'image')
 IMAGE_DIRECTORY_CAT = os.path.join(os.getcwd(), 'images', 'cat')
 IMAGE_DIRECTORY_TSUNADE = os.path.join(os.getcwd(), 'images', 'tsunade')
-NSFW_WET_FILE = os.path.join(os.getcwd(), 'nsfw', 'wet.json')
+NSFW_WAIFU_FILE = os.path.join(os.getcwd(), 'nsfw', 'waifu.json')
 CAT_FACT_FILE = os.path.join(os.getcwd(), 'chat', 'cat_fact.json')
 DETAILS_FILE = os.path.join(os.getcwd(), 'chat', 'details.json')
 
@@ -38,13 +38,13 @@ def load_details():
 
 DETAILS = load_details()
 
-# Load NSFW wet data
-def load_wet_data():
-    with open(NSFW_WET_FILE, 'r') as f:
-        wet_data = json.load(f)
-    return wet_data
+# Load NSFW waifu data
+def load_waifu_data():
+    with open(NSFW_WAIFU_FILE, 'r') as f:
+        waifu_data = json.load(f)
+    return waifu_data
 
-WET_DATA = load_wet_data()
+WAIFU_DATA = load_waifu_data()
 
 # Root route to render index.html
 @app.route('/', methods=['GET'])
@@ -142,14 +142,14 @@ def download_youtube_thumbnail():
 
     return jsonify({'thumbnail_url': thumbnail_url})
 
-# Route to serve random NSFW wet data
-@app.route('/nsfw/wet', methods=['GET'])
-def serve_random_nsfw_wet():
+# Route to serve random NSFW waifu data
+@app.route('/nsfw/waifu', methods=['GET'])
+def serve_random_nsfw_waifu():
     try:
-        random_wet = random.choice(WET_DATA)['url']
-        return jsonify({"url": random_wet})
+        random_waifu = random.choice(WAIFU_DATA)['url']
+        return jsonify({"url": random_waifu})
     except IndexError:
-        return "No NSFW wet data found", 404
+        return "No NSFW waifu data found", 404
     except Exception as e:
         return str(e), 500
 
