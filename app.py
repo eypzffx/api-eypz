@@ -11,6 +11,7 @@ IMAGE_DIRECTORY_IMAGE = os.path.join(os.getcwd(), 'images', 'image')
 IMAGE_DIRECTORY_CAT = os.path.join(os.getcwd(), 'images', 'cat')
 IMAGE_DIRECTORY_TSUNADE = os.path.join(os.getcwd(), 'images', 'tsunade')
 CAT_FACT_FILE = os.path.join(os.getcwd(), 'chat', 'cat_fact.json')
+DETAILS_FILE = os.path.join(os.getcwd(), 'chat', 'details.json')
 
 # List all video and image files in their respective directories
 video_files = os.listdir(VIDEO_DIRECTORY)
@@ -26,6 +27,15 @@ def load_cat_facts():
 
 # Load cat facts from JSON file
 CAT_FACTS = load_cat_facts()
+
+# Load details from JSON file
+def load_details():
+    with open(DETAILS_FILE, 'r') as f:
+        details = json.load(f)
+    return details
+
+# Load details from JSON file
+DETAILS = load_details()
 
 @app.route('/naruto', methods=['GET'])
 def serve_random_naruto_video():
@@ -79,6 +89,22 @@ def get_random_cat_fact():
         return jsonify({"fact": random_fact})
     except IndexError:
         return "No cat facts found", 404
+    except Exception as e:
+        return str(e), 500
+
+@app.route('/details/<category>', methods=['GET'])
+def get_random_fact(category):
+    try:
+        # Ensure the requested category exists in details.json
+        if category in DETAILS:
+            facts = DETAILS[category]
+            # Choose a random fact from the category
+            random_fact = random.choice(facts)
+            return jsonify({"fact": random_fact})
+        else:
+            return f"No facts found for category '{category}'", 404
+    except IndexError:
+        return f"No facts found for category '{category}'", 404
     except Exception as e:
         return str(e), 500
 
