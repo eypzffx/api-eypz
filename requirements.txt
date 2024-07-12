@@ -13,5 +13,5 @@ requests==2.32.3
 urllib3==2.2.2
 Werkzeug==3.0.3
 beautifulsoup4==4.10.0
-lxml==4.7.1
+lxml
 requests-html==0.10.0
