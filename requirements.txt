@@ -18,3 +18,4 @@ beautifulsoup4==4.10.0
 lxml
 instaloader
 requests-html==0.10.0
+isodate
