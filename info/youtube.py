@@ -1,4 +1,3 @@
-# info/youtube.py
 import requests
 import isodate
 
