@@ -7,6 +7,7 @@ from stalking.insta import get_instagram_profile
 from stalking.youtube import download_thumbnail
 from info.weather import get_weather  # Import the weather function
 from info.crypto import get_crypto    # Import the crypto function
+from info.youtube import search_youtube_videos  # Import the YouTube search function
 
 app = Flask(__name__)
 
@@ -208,6 +209,23 @@ def get_lyrics():
             return jsonify(response)
         else:
             return jsonify({'error': 'Lyrics not found for the given query'}), 404
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+# Route to search YouTube videos
+@app.route('/youtube', methods=['GET'])
+def search_youtube():
+    query = request.args.get('search')
+
+    if not query:
+        return jsonify({'error': 'Missing search query parameter `search`'}), 400
+
+    try:
+        results, status_code = search_youtube_videos(query)
+        if status_code == 200:
+            return jsonify(results)
+        else:
+            return jsonify(results), status_code
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
