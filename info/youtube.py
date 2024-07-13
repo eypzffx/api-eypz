@@ -6,9 +6,6 @@ YOUTUBE_API_URL = 'https://www.googleapis.com/youtube/v3/search'
 YOUTUBE_VIDEO_DETAILS_URL = 'https://www.googleapis.com/youtube/v3/videos'
 
 def convert_duration(duration):
-    """
-    Convert ISO 8601 duration to a more readable format.
-    """
     duration = isodate.parse_duration(duration)
     total_seconds = int(duration.total_seconds())
     minutes, seconds = divmod(total_seconds, 60)
@@ -16,7 +13,6 @@ def convert_duration(duration):
 
 def search_youtube_videos(query):
     try:
-        # Step 1: Search for videos based on the query
         search_params = {
             'part': 'snippet',
             'q': query,
@@ -32,7 +28,6 @@ def search_youtube_videos(query):
 
         video_ids = [item['id']['videoId'] for item in search_data['items']]
 
-        # Step 2: Get details for the videos
         video_params = {
             'part': 'contentDetails,snippet',
             'id': ','.join(video_ids),
