@@ -1,9 +1,14 @@
-from flask import Flask, jsonify, request, send_from_directory, render_template, url_for
+from flask import Flask, jsonify, send_from_directory, render_template, request, redirect, url_for
 from werkzeug.utils import secure_filename
-import lyricsgenius
 import os
 import random
 import json
+import lyricsgenius
+from stalking.insta import get_instagram_profile
+from stalking.youtube import download_thumbnail
+from info.weather import get_weather  # Import the weather function
+from info.crypto import get_crypto    # Import the crypto function
+from info.youtube import search_youtube_videos  # Import the YouTube search function
 import uuid
 
 app = Flask(__name__)
@@ -240,11 +245,17 @@ def upload_file():
         return jsonify({"error": "No selected file"}), 400
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
-        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        file_url = url_for('uploaded_file', filename=filename, _external=True)
+        unique_id = str(uuid.uuid4())
+        file_extension = filename.rsplit('.', 1)[1].lower()
+        unique_filename = f"{unique_id}.{file_extension}"
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], unique_filename))
+        file_url = url_for('uploaded_file', filename=unique_filename, _external=True)
         return jsonify({"url": file_url}), 200
     else:
         return jsonify({"error": "File type not allowed"}), 400
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @app.route('/uploads/<filename>', methods=['GET'])
 def uploaded_file(filename):
@@ -260,54 +271,30 @@ def upload_page():
             return jsonify({"error": "No selected file"}), 400
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            file_url = url_for('uploaded_file', filename=filename, _external=True)
+            unique_id = str(uuid.uuid4())
+            file_extension = filename.rsplit('.', 1)[1].lower()
+            unique_filename = f"{unique_id}.{file_extension}"
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], unique_filename))
+            file_url = url_for('uploaded_file', filename=unique_filename, _external=True)
             return jsonify({"url": file_url}), 200
         else:
             return jsonify({"error": "File type not allowed"}), 400
-    return render_template('upload.html')
-
-# Route to serve random anime data
-@app.route('/anime', methods=['GET'])
-def serve_random_anime_data():
-    try:
-        random_anime = random.choice(anime_data)
-        return jsonify(random_anime)
-    except IndexError:
-        return "No anime data found", 404
-    except Exception as e:
-        return str(e), 500
-
-# Route to serve the index.html page with buttons for image and video APIs
-@app.route('/welcome', methods=['GET'])
-def serve_index_page():
-    return render_template('index.html')
-
-# Route to serve the /api/website/images endpoint
-@app.route('/api/website/images', methods=['GET'])
-def serve_image_api():
-    return render_template('images.html')
-
-# Route to serve the /api/website/anime endpoint
-@app.route('/api/website/anime', methods=['GET'])
-def serve_anime_api():
-    return render_template('anime.html')
-
-# Route to serve the /api/website/ page with buttons for image and video APIs
-@app.route('/api/website', methods=['GET'])
-def serve_website_api():
-    return render_template('website.html')
-
-# Route to serve random image data
-@app.route('/image', methods=['GET'])
-def serve_random_image_data():
-    try:
-        random_image = random.choice(image_data)
-        return jsonify(random_image)
-    except IndexError:
-        return "No image data found", 404
-    except Exception as e:
-        return str(e), 500
+    return '''
+    <!doctype html>
+    <html lang="en">
+      <head>
+        <meta charset="utf-8">
+        <title>Upload File</title>
+      </head>
+      <body>
+        <h1>Upload File</h1>
+        <form method="post" enctype="multipart/form-data">
+          <input type="file" name="file">
+          <input type="submit" value="Upload">
+        </form>
+      </body>
+    </html>
+    '''
 
 if __name__ == "__main__":
-    app.run(port=int(os.environ.get('PORT', 5000)))
+    app.run(host='0.0.0.0', port=5000)
