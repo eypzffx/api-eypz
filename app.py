@@ -309,4 +309,5 @@ def serve_random_image_data():
     except Exception as e:
         return str(e), 500
 
-# Route to serve random anime data
+if __name__ == "__main__":
+    app.run(port=int(os.environ.get('PORT', 5000)))
