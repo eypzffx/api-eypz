@@ -1,0 +1,26 @@
+version: "1"
+services:
+  - name: python-api
+    image: koyeb/buildpacks:python
+    command:
+      - gunicorn
+      - -b :$PORT
+      - app:app
+    build:
+      - context: https://github.com/akshay-god01/api
+    env:
+      - name: PYTHONUNBUFFERED
+        value: "1"
+    ports:
+      - port: 8080
+    healthcheck:
+      http:
+        path: /
+        port: 8080
+    endpoints:
+      - name: http
+        kind: http
+        port: 8080
+        rules:
+          - path: /
+            method: GET
