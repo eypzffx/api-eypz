@@ -1,4 +1,5 @@
-from flask import Blueprint, jsonify, send_from_directory
+# app/media.py
+from flask import Blueprint, send_from_directory, jsonify
 import os
 import random
 import json
@@ -29,22 +30,15 @@ def load_cat_facts():
 
 CAT_FACTS = load_cat_facts()
 
-# Load NSFW waifu data
-def load_waifu_data():
-    with open(NSFW_WAIFU_FILE, 'r') as f:
-        waifu_data = json.load(f)
-    return waifu_data
+# Load details
+def load_details():
+    with open(DETAILS_FILE, 'r') as f:
+        details = json.load(f)
+    return details
 
-WAIFU_DATA = load_waifu_data()
+DETAILS = load_details()
 
-# Load NSFW neko data
-def load_neko_data():
-    with open(NSFW_NEKO_FILE, 'r') as f:
-        neko_data = json.load(f)
-    return neko_data
-
-NEKO_DATA = load_neko_data()
-
+# Route to serve random media and facts
 @media_bp.route('/naruto', methods=['GET'])
 def serve_random_naruto_video():
     try:
@@ -92,25 +86,5 @@ def get_random_cat_fact():
         return jsonify({"fact": random_fact})
     except IndexError:
         return "No cat facts found", 404
-    except Exception as e:
-        return str(e), 500
-
-@media_bp.route('/nsfw/waifu', methods=['GET'])
-def serve_random_nsfw_waifu():
-    try:
-        random_waifu = random.choice(WAIFU_DATA)['url']
-        return jsonify({"url": random_waifu})
-    except IndexError:
-        return "No NSFW waifu data found", 404
-    except Exception as e:
-        return str(e), 500
-
-@media_bp.route('/nsfw/neko', methods=['GET'])
-def serve_random_nsfw_neko():
-    try:
-        random_neko = random.choice(NEKO_DATA)['url']
-        return jsonify({"url": random_neko})
-    except IndexError:
-        return "No NSFW neko data found", 404
     except Exception as e:
         return str(e), 500
