@@ -1,26 +1,12 @@
-version: "1"
-services:
-  - name: python-api
-    image: koyeb/buildpacks:python
-    command:
-      - gunicorn
-      - -b :$PORT
-      - app:app
-    build:
-      - context: https://github.com/akshay-god01/api
-    env:
-      - name: PYTHONUNBUFFERED
-        value: "1"
-    ports:
-      - port: 8080
-    healthcheck:
-      http:
-        path: /
-        port: 8080
-    endpoints:
-      - name: http
-        kind: http
-        port: 8080
-        rules:
-          - path: /
-            method: GET
+name: my-app
+regions:
+  - fra # Replace with your preferred region
+
+build:
+  commands:
+    - apt-get update && apt-get install -y python3-pip
+    - pip3 install -r requirements.txt
+
+run:
+  type: python
+  cmd: "python app.py"
