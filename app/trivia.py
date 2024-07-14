@@ -1,3 +1,4 @@
+import requests
 from flask import Blueprint, jsonify, request
 import random
 import json
@@ -11,7 +12,7 @@ trivia_data = None
 def fetch_questions():
     global trivia_data
     api_url = "https://opentdb.com/api.php?amount=100&type=multiple"
-
+    
     try:
         response = requests.get(api_url)
         response.raise_for_status()  # Raise exception for bad status codes
@@ -40,6 +41,7 @@ def fetch_questions():
 
     except requests.exceptions.RequestException as e:
         print(f"Error fetching questions: {e}")
+        # Handle the exception here, e.g., log the error, set a default response, etc.
 
 # Endpoint to get a random trivia question and check answer in one route
 @trivia_bp.route('/random', methods=['GET', 'POST'])
