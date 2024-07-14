@@ -1,8 +1,8 @@
+# app/lyrics.py
 from flask import Blueprint, jsonify, request
 import lyricsgenius
 
 lyrics_bp = Blueprint('lyrics', __name__)
-
 genius = lyricsgenius.Genius("UCPfLPaO-yEFTrzwgxsNgPN0JaZr8rUnWhLXjA4w5WmUP9rFp1ueGXPPcRqW6Jsa")
 
 @lyrics_bp.route('/lyrics', methods=['GET'])
