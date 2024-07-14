@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 from app.lyrics import lyrics_bp
 from app.media import media_bp
 from app.youtube import youtube_bp
@@ -22,7 +22,7 @@ app.register_blueprint(crypto_bp)
 app.register_blueprint(search_bp)
 app.register_blueprint(nsfw_bp)
 
-app.route('/')
+@app.route('/')
 def index():
     return render_template('index.html')
     
