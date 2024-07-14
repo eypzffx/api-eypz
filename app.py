@@ -7,6 +7,7 @@ from app.weather import weather_bp
 from app.crypto import crypto_bp
 from app.search import search_bp
 from app.nsfw import nsfw_bp
+from app.details import details_bp  # Import details blueprint
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
@@ -21,6 +22,7 @@ app.register_blueprint(weather_bp)
 app.register_blueprint(crypto_bp)
 app.register_blueprint(search_bp)
 app.register_blueprint(nsfw_bp)
+app.register_blueprint(details_bp)  # Register details blueprint
 
 @app.route('/')
 def index():
