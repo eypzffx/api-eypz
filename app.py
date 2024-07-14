@@ -7,7 +7,8 @@ from app.weather import weather_bp
 from app.crypto import crypto_bp
 from app.search import search_bp
 from app.nsfw import nsfw_bp
-from app.details import details_bp  # Import details blueprint
+from app.details import details_bp
+from app.trivia import trivia_bp  # Import trivia blueprint
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
@@ -22,11 +23,12 @@ app.register_blueprint(weather_bp)
 app.register_blueprint(crypto_bp)
 app.register_blueprint(search_bp)
 app.register_blueprint(nsfw_bp)
-app.register_blueprint(details_bp)  # Register details blueprint
+app.register_blueprint(details_bp)
+app.register_blueprint(trivia_bp, url_prefix='/trivia')  # Register trivia blueprint with URL prefix
 
 @app.route('/')
 def index():
     return render_template('index.html')
-    
+
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000)
