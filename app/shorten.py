@@ -1,4 +1,3 @@
-# app/shorten.py
 from flask import Blueprint, jsonify, request, redirect
 import pyshorteners
 import random
@@ -17,26 +16,17 @@ def generate_random_string(length=8):
 
 @shorten_bp.route('/shorten', methods=['POST', 'GET'])
 def shorten_url():
-    long_url = None
-
     if request.method == 'POST':
-        # Handle JSON request body
-        long_url = request.json.get('url')
+        long_url = request.form.get('url')
     elif request.method == 'GET':
-        # Handle URL query parameter
         long_url = request.args.get('url')
 
     if not long_url:
         return jsonify({'error': 'Missing URL parameter'}), 400
 
     try:
-        # Generate a random short code
         short_code = generate_random_string()
-        
-        # Store the mapping of short code to long URL
         custom_urls[short_code] = long_url
-        
-        # Construct the custom short URL
         short_url = f"{request.host_url}{short_code}"
         
         return jsonify({'short_url': short_url}), 200
