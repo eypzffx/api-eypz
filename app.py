@@ -1,4 +1,7 @@
 from flask import Flask, render_template
+from flask_cors import CORS
+
+# Import existing blueprints
 from app.lyrics import lyrics_bp
 from app.media import media_bp
 from app.youtube import youtube_bp
@@ -10,11 +13,15 @@ from app.nsfw import nsfw_bp
 from app.details import details_bp
 from app.trivia import trivia_bp  # Import trivia blueprint
 
+# Import the new blueprint for URL shortening
+from app.shorten_bp import shorten_bp
+
 app = Flask(__name__)
+CORS(app)  # Enable CORS for all routes
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
 app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024  # 100 MB upload limit
 
-# Register Blueprints
+# Register existing blueprints
 app.register_blueprint(lyrics_bp)
 app.register_blueprint(media_bp)
 app.register_blueprint(youtube_bp)
@@ -26,6 +33,10 @@ app.register_blueprint(nsfw_bp)
 app.register_blueprint(details_bp)
 app.register_blueprint(trivia_bp, url_prefix='/trivia')  # Register trivia blueprint with URL prefix
 
+# Register the new blueprint for URL shortening
+app.register_blueprint(shorten_bp, url_prefix='/shorten')
+
+# Route for index page
 @app.route('/')
 def index():
     return render_template('index.html')
