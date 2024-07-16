@@ -12,9 +12,7 @@ from app.search import search_bp
 from app.nsfw import nsfw_bp
 from app.details import details_bp
 from app.trivia import trivia_bp  # Import trivia blueprint
-
-# Import the new blueprint for URL shortening
-from app.shorten_bp import shorten_bp
+from app.shorten import shorten_bp
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
@@ -32,8 +30,6 @@ app.register_blueprint(search_bp)
 app.register_blueprint(nsfw_bp)
 app.register_blueprint(details_bp)
 app.register_blueprint(trivia_bp, url_prefix='/trivia')  # Register trivia blueprint with URL prefix
-
-# Register the new blueprint for URL shortening
 app.register_blueprint(shorten_bp, url_prefix='/shorten')
 
 # Route for index page
