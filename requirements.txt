@@ -6,7 +6,7 @@ click==8.1.7
 Flask==2.0.1
 requests
 pyshorteners==1.0.1
-flask-cors==3.1.1
+flask-cors==3.0.10
 idna==3.7
 itsdangerous==2.2.0
 Jinja2==3.1.4
