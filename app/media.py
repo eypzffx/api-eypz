@@ -11,8 +11,8 @@ VIDEO_DIRECTORY = os.path.join(os.getcwd(), 'videos', 'naruto')
 IMAGE_DIRECTORY_IMAGE = os.path.join(os.getcwd(), 'images', 'image')
 IMAGE_DIRECTORY_CAT = os.path.join(os.getcwd(), 'images', 'cat')
 IMAGE_DIRECTORY_TSUNADE = os.path.join(os.getcwd(), 'images', 'tsunade')
-IMAGE_DIRECTORY_ANIME-B = os.path.join(os.getcwd(), 'images', 'anime-b')
-IMAGE_DIRECTORY_ANIME-G = os.path.join(os.getcwd(), 'images', 'anime-g')
+IMAGE_DIRECTORY_ANIMEB = os.path.join(os.getcwd(), 'images', 'anime-b')
+IMAGE_DIRECTORY_ANIMEG = os.path.join(os.getcwd(), 'images', 'anime-g')
 NSFW_WAIFU_FILE = os.path.join(os.getcwd(), 'nsfw', 'waifu.json')
 NSFW_NEKO_FILE = os.path.join(os.getcwd(), 'nsfw', 'neko.json')
 CAT_FACT_FILE = os.path.join(os.getcwd(), 'chat', 'cat_fact.json')
@@ -23,8 +23,8 @@ video_files = os.listdir(VIDEO_DIRECTORY)
 image_files_image = os.listdir(IMAGE_DIRECTORY_IMAGE)
 image_files_cat = os.listdir(IMAGE_DIRECTORY_CAT)
 image_files_tsunade = os.listdir(IMAGE_DIRECTORY_TSUNADE)
-image_files_anime-b = os.listdir(IMAGE_DIRECTORY_ANIME-B)
-image_files_anime-g = os.listdir(IMAGE_DIRECTORY_ANIME-G)
+image_files_animeb = os.listdir(IMAGE_DIRECTORY_ANIMEB)
+image_files_animeg = os.listdir(IMAGE_DIRECTORY_ANIMEG)
 
 # Load cat facts
 def load_cat_facts():
@@ -64,20 +64,20 @@ def serve_random_image_image():
         return str(e), 500
 
 @media_bp.route('/anime-b', methods=['GET'])
-def serve_random_image_tsunade():
+def serve_random_image_animeb():
     try:
         random_image = random.choice(image_files_tsunade)
-        return send_from_directory(IMAGE_DIRECTORY_ANIME-B, random_image)
+        return send_from_directory(IMAGE_DIRECTORY_ANIMEB, random_image)
     except IndexError:
         return "No images found in 'anime-b' directory", 404
     except Exception as e:
         return str(e), 500
 
 @media_bp.route('/anime-g', methods=['GET'])
-def serve_random_image_tsunade():
+def serve_random_image_animeg():
     try:
         random_image = random.choice(image_files_tsunade)
-        return send_from_directory(IMAGE_DIRECTORY_ANIME-G, random_image)
+        return send_from_directory(IMAGE_DIRECTORY_ANIMEG, random_image)
     except IndexError:
         return "No images found in 'anime-g' directory", 404
     except Exception as e:
