@@ -21,4 +21,5 @@ lxml
 instaloader
 requests-html==0.10.0
 isodate
+Flask-CORS==3.1.2
 google-images-search
