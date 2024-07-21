@@ -21,3 +21,4 @@ lxml
 instaloader
 requests-html==0.10.0
 isodate
+google-images-search==1.1.0
