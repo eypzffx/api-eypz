@@ -13,6 +13,7 @@ from app.nsfw import nsfw_bp
 from app.details import details_bp
 from app.trivia import trivia_bp  # Import trivia blueprint
 from app.shorten import shorten_bp  # Import shorten blueprint
+from app.image_search import image_search_bp
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
@@ -27,8 +28,9 @@ app.register_blueprint(crypto_bp)
 app.register_blueprint(search_bp)
 app.register_blueprint(nsfw_bp)
 app.register_blueprint(details_bp)
-app.register_blueprint(trivia_bp, url_prefix='/trivia')  # Register trivia blueprint with URL prefix
-app.register_blueprint(shorten_bp)  # Register shorten blueprint WITHOUT URL prefix
+app.register_blueprint(trivia_bp, url_prefix='/trivia')
+app.register_blueprint(shorten_bp)
+app.register_blueprint(image_search_bp, url_prefix='/image_search')  # Register the new blueprint
 
 # Route for index page
 @app.route('/')
