@@ -4,25 +4,75 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Eypz API's</title>
-    <meta property="og:title" content="Eypz API's">
-    <meta property="og:image" content="https://i.imgur.com/heNPtx3.jpeg">
     <link rel="stylesheet" href="static/style.css">
 </head>
 <body>
-    <a href="https://github.com/sataniceypz" target="_blank">
-        <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub" class="github-icon">
-    </a>
+    <div class="welcome-message">Welcome to Eypz API</div>
     <div class="container">
-        <h1>Eypz API's</h1>
-        <div class="contact-title">Contact</div>
-        <a href="mailto:sataniceypz@gmail.com" class="email-button">Email</a>
-        <a href="https://wa.me/917902624272" class="whatsapp-button">WhatsApp</a>
+        <div class="header">
+            <div class="main-title">Eypz API's</div>
+        </div>
+        <!-- Anime Section -->
+        <div class="subtitle" onclick="toggleButtons('anime-buttons')">
+            Anime
+            <span class="arrow">&#9660;</span>
+        </div>
+        <div class="buttons" id="anime-buttons">
+            <a href="https://api.eypz.c0m.in/nsfw/neko" class="button">NSFW Neko</a>
+            <a href="https://api.eypz.c0m.in/nsfw/neko" class="button">NSFW Waifu</a>
+            <a href="https://api.eypz.c0m.in/anime-g" class="button">Anime Girl</a>
+            <a href="https://api.eypz.c0m.in/anime-b" class="button">Anime Boy</a>
+            <a href="https://api.eypz.c0m.in/tsunade" class="button">Tsunade</a>
+            <a href="https://api.eypz.c0m.in/Naruto" class="button">Naruto</a>
+            <a href="https://api.eypz.c0m.in/image" class="button">Random Anime Image</a>
+        </div>
+        <!-- Media Section -->
+        <div class="subtitle" onclick="toggleButtons('media-buttons')">
+            Media
+            <span class="arrow">&#9660;</span>
+        </div>
+        <div class="buttons" id="media-buttons">
+            <a href="https://api.eypz.c0m.in/cat" class="button">Cat Image</a>
+            <a href="https://api.eypz.c0m.in/download_thumbnail?url=https://youtu.be/pvHsFrnWraM?si=-TFzBU5-ltu_DbWG" class="button">YouTube Thumbnail</a>
+            <a href="https://api.eypz.c0m.in/youtube?search=Amv%20quick%20edit" class="button">YouTube Search</a>
+            <a href="https://api.eypz.c0m.in/lyrics?q=wanna%20be%20yours" class="button">Lyrics</a>
+        </div>
+        <!-- Info Section -->
+        <div class="subtitle" onclick="toggleButtons('info-buttons')">
+            Info
+            <span class="arrow">&#9660;</span>
+        </div>
+        <div class="buttons" id="info-buttons">
+            <a href="https://api.eypz.c0m.in/info/weather?city=%20Thiruvananthapuram" class="button">Weather</a>
+        </div>
+        <!-- Game Section -->
+        <div class="subtitle" onclick="toggleButtons('game-buttons')">
+            Game
+            <span class="arrow">&#9660;</span>
+        </div>
+        <div class="buttons" id="game-buttons">
+            <a href="https://api.eypz.c0m.in/random" class="button">Trivia</a>
+        </div>
+        <!-- Fact Section -->
+        <div class="subtitle" onclick="toggleButtons('fact-buttons')">
+            Fact
+            <span class="arrow">&#9660;</span>
+        </div>
+        <div class="buttons" id="fact-buttons">
+            <a href="https://api.eypz.c0m.in/details/technology" class="button">Technology</a>
+            <a href="https://api.eypz.c0m.in/cat-fact" class="button">Cat Fact</a>
+            <a href="https://api.eypz.c0m.in/details/history" class="button">History</a>
+            <a href="https://api.eypz.c0m.in/details/space" class="button">Space</a>
+            <a href="https://api.eypz.c0m.in/details/animals" class="button">Animals</a>
+        </div>
     </div>
-    <div class="dino-container">
-        <iframe src="https://offline-dino-game.firebaseapp.com/" title="Colorful Chrome Dino Game"></iframe>
-    </div>
-    <footer>
-        <p>&copy; 2024 Eypz</p>
-    </footer>
+    <script>
+        function toggleButtons(id) {
+            const buttons = document.getElementById(id);
+            const subtitle = document.querySelector(`#${id}`).previousElementSibling;
+            buttons.classList.toggle('expanded');
+            subtitle.classList.toggle('expanded');
+        }
+    </script>
 </body>
-        </html>
+</html>
