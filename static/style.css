@@ -1,102 +1,109 @@
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f9;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
     padding: 0;
-    text-align: center;
-}
-.container {
-    padding: 20px;
-    animation: fadeIn 2s ease-in-out;
-    margin-top: 60px; /* Add space for the GitHub icon */
-}
-h1 {
-    margin-top: 0;
-    color: #333;
-    animation: slideInDown 1s ease-in-out;
-}
-.contact-title {
-    font-size: 24px;
-    color: #333;
-    margin: 20px 0;
-}
-.email-button, .whatsapp-button {
-    padding: 10px 20px;
-    background-color: #77c3ec;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    text-decoration: none;
-    font-size: 16px;
-    display: inline-block;
-    margin: 10px;
-    transition: background-color 0.3s, transform 0.3s;
-    cursor: pointer;
-}
-.email-button {
-    background-color: #77c3ec;
-}
-.email-button:hover {
-    background-color: #5aa6d1;
-}
-.whatsapp-button {
-    background-color: #25D366;
-}
-.whatsapp-button:hover {
-    background-color: #1DA851;
-}
-.github-icon {
-    width: 24px;
-    height: 24px;
-    transition: transform 0.3s;
-    position: fixed;
-    top: 10px;
-    left: 10px;
-    z-index: 1000;
-}
-.github-icon:hover {
-    transform: scale(1.1);
-}
-.dino-container {
-    margin-top: 20px;
-    margin-bottom: 20px;
-    padding: 10px;
-    background-color: #fff;
-    border-radius: 15px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(120deg, #f6d365 0%, #fda085 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
     overflow: hidden;
-    max-width: 90%;
-    margin-left: auto;
-    margin-right: auto;
 }
-iframe {
-    border: none;
-    width: 100%;
-    height: 400px;
-    border-radius: 15px;
-}
-footer {
-    margin-top: 20px;
-    background: #333;
-    color: #fff;
-    padding: 5px;
-    font-size: 12px;
-}
-@keyframes slideInDown {
-    from {
-        transform: translateY(-100%);
-        opacity: 0;
-    }
-    to {
-        transform: translateY(0);
-        opacity: 1;
-    }
+.welcome-message {
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 36px;
+    color: #ffffff;
+    opacity: 0;
+    animation: fadeIn 2s forwards;
 }
 @keyframes fadeIn {
     from {
         opacity: 0;
+        transform: translate(-50%, -70%);
     }
     to {
         opacity: 1;
+        transform: translate(-50%, -50%);
     }
+}
+.container {
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    width: 80%;
+    max-width: 800px;
+    padding: 20px;
+    opacity: 0;
+    animation: fadeInContainer 2s 2s forwards; /* Delay to ensure welcome message shows first */
+}
+@keyframes fadeInContainer {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+.header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+.main-title {
+    font-size: 32px;
+    color: #333;
+    margin: 0;
+}
+.subtitle {
+    font-size: 18px;
+    color: #555;
+    margin: 10px 0;
+    text-align: left;
+    cursor: pointer;
+    position: relative;
+    user-select: none;
+    padding-right: 30px;
+}
+.arrow {
+    display: inline-block;
+    margin-left: 10px;
+    transition: transform 0.3s ease;
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+.subtitle.expanded .arrow {
+    transform: rotate(180deg);
+}
+.buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+.buttons.expanded {
+    max-height: 300px; /* Adjust as needed */
+}
+.button {
+    display: inline-block;
+    padding: 10px 20px;
+    text-decoration: none;
+    color: white;
+    background-color: #007BFF;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+.button:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
 }
