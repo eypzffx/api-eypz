@@ -4,7 +4,7 @@ import re
 
 insta_bp = Blueprint('insta', __name__)
 
-@bp.route('/insta_story', methods=['GET'])
+@insta_bp.route('/insta_story', methods=['GET'])
 def download_insta_media():
     url = request.args.get('url')
     if not url:
@@ -20,7 +20,7 @@ def download_insta_media():
 
     try:
         media_urls = []
-        
+
         if 'stories' in url:
             # Story URL
             username_match = re.search(r'instagram.com/stories/(.*?)/', url)
