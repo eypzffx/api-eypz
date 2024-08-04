@@ -1,6 +1,8 @@
-from flask import Blueprint, request, jsonify
+from flask import Flask, Blueprint, request, jsonify
 import instaloader
+import re
 
+# Create a Blueprint
 insta_bp = Blueprint('insta', __name__)
 
 def download_instagram_media(url):
@@ -8,37 +10,44 @@ def download_instagram_media(url):
     media_urls = []
 
     try:
-        post = instaloader.Post.from_shortcode(loader.context, url.split("/")[-2])
-        if post.is_video:
-            media_urls.append(post.video_url)
-        else:
-            media_urls.append(post.url)
-
-        for sidecar_node in post.get_sidecar_nodes():
-            if sidecar_node.is_video:
-                media_urls.append(sidecar_node.video_url)
-            else:
-                media_urls.append(sidecar_node.display_url)
+        # Handle post media
+        shortcode_match = re.search(r'instagram.com/p/([^/]+)/', url)
+        if shortcode_match:
+            shortcode = shortcode_match.group(1)
+            post = instaloader.Post.from_shortcode(loader.context, shortcode)
+            if post.typename == 'GraphImage':
+                media_urls.append(post.url)
+            elif post.typename == 'GraphVideo':
+                media_urls.append(post.video_url)
+            elif post.typename == 'GraphSidecar':
+                for sidecar_node in post.get_sidecar_nodes():
+                    if sidecar_node.is_video:
+                        media_urls.append(sidecar_node.video_url)
+                    else:
+                        media_urls.append(sidecar_node.display_url)
     except Exception as e:
         print(f"Error downloading post: {e}")
-        pass
-
+    
     try:
-        profile = instaloader.Profile.from_username(loader.context, url.split("/")[-2])
-        stories = loader.get_stories(userids=[profile.userid])
-        for story in stories:
-            for item in story.get_items():
-                if item.video_url:
-                    media_urls.append(item.video_url)
-                else:
-                    media_urls.append(item.url)
+        # Handle story media
+        if 'stories' in url:
+            username_match = re.search(r'instagram.com/stories/(.*?)/', url)
+            if username_match:
+                username = username_match.group(1)
+                profile = instaloader.Profile.from_username(loader.context, username)
+                stories = loader.get_stories(userids=[profile.userid])
+                for story in stories:
+                    for item in story.get_items():
+                        if item.is_video:
+                            media_urls.append(item.video_url)
+                        else:
+                            media_urls.append(item.url)
     except Exception as e:
         print(f"Error downloading stories: {e}")
-        pass
 
     return media_urls
 
-@insta_bp.route('/download', methods=['GET'])
+@insta_bp.route('/insta_story', methods=['GET'])
 def insta_downloader():
     url = request.args.get('url')
     if not url:
@@ -49,3 +58,10 @@ def insta_downloader():
         return jsonify({"media_urls": media_urls}), 200
     else:
         return jsonify({"error": "Failed to download media"}), 500
+
+# Create the Flask app
+app = Flask(__name__)
+app.register_blueprint(insta_bp)
+
+if __name__ == '__main__':
+    app.run(debug=True)
