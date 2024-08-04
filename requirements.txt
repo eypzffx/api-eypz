@@ -19,7 +19,7 @@ urllib3==2.2.2
 werkzeug==2.0.1
 beautifulsoup4==4.10.0
 lxml
-instaloader
+instaloader>=4.6.8
 requests-html==0.10.0
 isodate
 Flask-CORS
