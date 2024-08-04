@@ -2,7 +2,7 @@ from flask import Blueprint, request, jsonify
 import instaloader
 import re
 
-bp = Blueprint('insta', __name__)
+insta_bp = Blueprint('insta', __name__)
 
 @bp.route('/insta_story', methods=['GET'])
 def download_insta_media():
