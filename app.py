@@ -6,15 +6,16 @@ from flask_cors import CORS
 from app.lyrics import lyrics_bp
 from app.media import media_bp
 from app.youtube import youtube_bp
-from app.instagram import instagram_bp
+from app.instagram import instagram_bp  # Import the Instagram blueprint
+from app.insta import insta_bp  # Import the Insta blueprint
 from app.weather import weather_bp
 from app.crypto import crypto_bp
 from app.search import search_bp
 from app.nsfw import nsfw_bp
 from app.details import details_bp
-from app.trivia import trivia_bp  # Import trivia blueprint
-from app.shorten import shorten_bp  # Import shorten blueprint
-from app.image_search import image_search_bp  # Import image search blueprint
+from app.trivia import trivia_bp
+from app.shorten import shorten_bp
+from app.image_search import image_search_bp
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
@@ -23,15 +24,16 @@ CORS(app)  # Enable CORS for all routes
 app.register_blueprint(lyrics_bp)
 app.register_blueprint(media_bp)
 app.register_blueprint(youtube_bp)
-app.register_blueprint(instagram_bp)
+app.register_blueprint(instagram_bp)  # Register the Instagram blueprint
+app.register_blueprint(insta_bp)  # Register the Insta blueprint
 app.register_blueprint(weather_bp)
 app.register_blueprint(crypto_bp)
 app.register_blueprint(search_bp)
 app.register_blueprint(nsfw_bp)
 app.register_blueprint(details_bp)
-app.register_blueprint(trivia_bp)  # Register trivia blueprint
+app.register_blueprint(trivia_bp)
 app.register_blueprint(shorten_bp)
-app.register_blueprint(image_search_bp)  # Register image search blueprint
+app.register_blueprint(image_search_bp)
 
 # Route for index page
 @app.route('/')
