@@ -2,7 +2,7 @@ from flask import Blueprint, jsonify, request
 import requests
 
 # Create a Blueprint for the Spotify search
-spotify_bp = Blueprint('spotify', __name__)
+spotifys_bp = Blueprint('spotify', __name__)
 
 # External API URL for Spotify search
 EXTERNAL_API_URL = 'https://api.maher-zubair.tech/search/spotify'
