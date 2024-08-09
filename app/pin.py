@@ -2,7 +2,7 @@ from flask import Blueprint, request, jsonify
 import requests
 import re
 
-bp = Blueprint('pin', __name__)
+pin_bp = Blueprint('pin', __name__)
 
 @bp.route('/pin', methods=['GET'])
 def pinterest_downloader():
