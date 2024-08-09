@@ -16,7 +16,6 @@ def pinterest_downloader():
         }), 400
     
     try:
-        # Perform a GET request to the provided URL
         response = requests.get(url)
         if response.status_code != 200:
             return jsonify({
@@ -25,21 +24,21 @@ def pinterest_downloader():
                 "message": "Failed to retrieve the page"
             }), 400
         
-        # Extract the media URL using regex
-        match = re.search(r'https://v1\.pinimg\.com/\S+\.(jpg|mp4|m3u8)', response.text)
-        if not match:
+        # This regex captures the full URL ending in jpg, mp4, or m3u8
+        matches = re.findall(r'https://v1\.pinimg\.com/\S+\.(?:jpg|mp4|m3u8)', response.text)
+        if not matches:
             return jsonify({
                 "creator": "Eypz God",
                 "status": "error",
-                "message": "Media URL not found"
+                "message": "Media URLs not found"
             }), 404
         
-        media_url = match.group(0)
-        # Format the response to be more informative
+        media_urls = {f"url{i+1}": match for i, match in enumerate(matches)}
+        
         result = {
             "creator": "Eypz God",
             "status": "success",
-            "media_url": media_url
+            "media_urls": media_urls
         }
         return jsonify(result), 200
     
