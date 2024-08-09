@@ -4,7 +4,7 @@ import re
 
 pin_bp = Blueprint('pin', __name__)
 
-@bp.route('/pin', methods=['GET'])
+@pin_bp.route('/pin', methods=['GET'])
 def pinterest_downloader():
     url = request.args.get('url')
     
