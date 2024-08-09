@@ -18,6 +18,7 @@ from app.shorten import shorten_bp
 from app.image_search import image_search_bp
 from app.spotify import spotify_bp
 from app.spotifysearch import spotifys_bp
+from app.pin import pin_bp
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
@@ -38,7 +39,7 @@ app.register_blueprint(shorten_bp)
 app.register_blueprint(image_search_bp)
 app.register_blueprint(spotify_bp)
 app.register_blueprint(spotifys_bp)
-
+app.register_blueprint(pin_bp)
 # Route for index page
 @app.route('/')
 def index():
