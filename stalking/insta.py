@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 import instaloader
 
-media_downloader_bp = Blueprint('media_downloader', __name__)
+insta_bp = Blueprint('insta', __name__)
 
 def download_instagram_media(url):
     loader = instaloader.Instaloader()
