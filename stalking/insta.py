@@ -1,45 +1,68 @@
 from flask import Blueprint, request, jsonify
 import instaloader
+import re
 
 insta_bp = Blueprint('insta', __name__)
+L = instaloader.Instaloader()
 
 def download_instagram_media(url):
-    loader = instaloader.Instaloader()
     media_urls = []
-
     try:
-        # For posts and reels
-        shortcode = url.split("/")[-2]
-        post = instaloader.Post.from_shortcode(loader.context, shortcode)
-        if post.is_video:
-            media_urls.append(post.video_url)
+        # Extract shortcode from URL
+        if 'instagram.com/p/' in url:
+            match = re.search(r'/p/([^/?]+)', url)
+        elif 'instagram.com/reel/' in url:
+            match = re.search(r'/reel/([^/?]+)', url)
+        elif 'instagram.com/stories/' in url:
+            match = re.search(r'/stories/([^/?]+)', url)
         else:
-            media_urls.append(post.url)
+            raise ValueError("Unsupported URL format.")
 
-        # If the post has multiple media (like a carousel)
-        for sidecar_node in post.get_sidecar_nodes():
-            if sidecar_node.is_video:
-                media_urls.append(sidecar_node.video_url)
+        if not match:
+            raise ValueError("Failed to extract shortcode.")
+
+        shortcode = match.group(1)
+        print(f"Extracted Shortcode: {shortcode}")
+
+        post = instaloader.Post.from_shortcode(L.context, shortcode)
+
+        # Collecting data
+        data = {
+            "caption": post.caption,
+            "likes": post.likes,
+            "media": []
+        }
+
+        # Handle carousel posts
+        if post.is_video:  # If it's a video post
+            data["media"].append({
+                "media_url": post.url,
+                "is_video": True,
+                "video_url": post.video_url
+            })
+        else:
+            # Check for carousel (multiple media)
+            if post.get_sidecar_nodes():
+                for item in post.get_sidecar_nodes():
+                    media_data = {
+                        "media_url": item.display_url,
+                        "is_video": item.is_video
+                    }
+                    if item.is_video:
+                        media_data["video_url"] = item.video_url
+                    data["media"].append(media_data)
             else:
-                media_urls.append(sidecar_node.display_url)
-    except Exception as e:
-        print(f"Failed to download post/reel: {e}")
+                # Single media post
+                data["media"].append({
+                    "media_url": post.url,
+                    "is_video": post.is_video,
+                    "video_url": post.video_url if post.is_video else None
+                })
 
-    try:
-        # For stories
-        shortcode = url.split("/")[-2]
-        profile = instaloader.Profile.from_username(loader.context, shortcode)
-        stories = loader.get_stories(userids=[profile.userid])
-        for story in stories:
-            for item in story.get_items():
-                if item.video_url:
-                    media_urls.append(item.video_url)
-                else:
-                    media_urls.append(item.url)
+        return data
     except Exception as e:
-        print(f"Failed to download stories: {e}")
-
-    return media_urls
+        print(f"Exception occurred: {e}")
+        raise
 
 @insta_bp.route('/insta', methods=['GET'])
 def download_media():
@@ -47,8 +70,11 @@ def download_media():
     if not url:
         return jsonify({"error": "No URL provided."}), 400
 
-    media_urls = download_instagram_media(url)
-    if not media_urls:
-        return jsonify({"error": "Failed to download media."}), 500
+    try:
+        data = download_instagram_media(url)
+        if not data["media"]:
+            return jsonify({"error": "No media found."}), 404
 
-    return jsonify({"media_urls": media_urls})
+        return jsonify(data)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
