@@ -41,7 +41,7 @@ def download_instagram_media(url):
 
     return media_urls
 
-@media_downloader_bp.route('/insta', methods=['GET'])
+@insta_bp.route('/insta', methods=['GET'])
 def download_media():
     url = request.args.get('url')
     if not url:
