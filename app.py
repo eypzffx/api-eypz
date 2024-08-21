@@ -5,8 +5,7 @@ from flask_cors import CORS
 # Import all existing blueprints
 from app.lyrics import lyrics_bp
 from app.media import media_bp
-from app.youtube import youtube_bp
-from app.instagram import instagram_bp  # Import the Instagram blueprint
+from app.youtube import youtube_bp  # Import the Instagram blueprint
 from app.insta import insta_bp  # Import the Insta blueprint
 from app.weather import weather_bp
 from app.crypto import crypto_bp
@@ -26,8 +25,7 @@ CORS(app)  # Enable CORS for all routes
 # Register all existing blueprints
 app.register_blueprint(lyrics_bp)
 app.register_blueprint(media_bp)
-app.register_blueprint(youtube_bp)
-app.register_blueprint(instagram_bp)  # Register the Instagram blueprint
+app.register_blueprint(youtube_bp)  # Register the Instagram blueprint
 app.register_blueprint(insta_bp)  # Register the Insta blueprint
 app.register_blueprint(weather_bp)
 app.register_blueprint(crypto_bp)
