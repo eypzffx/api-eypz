@@ -1,34 +1,67 @@
-# stalking/insta.py
-
+from flask import Blueprint, request, jsonify
 import instaloader
+import re
 
-def get_instagram_profile(username):
-    L = instaloader.Instaloader()
+# Create a blueprint for Instagram
+insta_bp = Blueprint('insta', __name__)
+L = instaloader.Instaloader()
+
+@insta_bp.route('/insta', methods=['GET'])
+def insta_downloader():
+    url = request.args.get('url')
+    if not url:
+        return jsonify({"error": "No URL provided."}), 400
 
     try:
-        profile = instaloader.Profile.from_username(L.context, username)
-    except instaloader.exceptions.ProfileNotExistsException:
-        return None, "Profile does not exist"
-    except instaloader.exceptions.InstaloaderException as e:
-        return None, f"Failed to fetch profile: {str(e)}"
+        # Extract shortcode from URL
+        if 'instagram.com/p/' in url:
+            match = re.search(r'/p/([^/?]+)', url)
+        elif 'instagram.com/reel/' in url:
+            match = re.search(r'/reel/([^/?]+)', url)
+        elif 'instagram.com/stories/' in url:
+            match = re.search(r'/stories/([^/?]+)', url)
+        else:
+            return jsonify({"error": "Unsupported URL format."}), 400
 
-    # Debug prints to check what profile object contains
-    print(f"Username: {profile.username}")
-    print(f"Full Name: {profile.full_name}")
-    print(f"Biography: {profile.biography}")
-    print(f"Followers: {profile.followers}")
-    print(f"Following: {profile.followees}")
-    print(f"Posts: {profile.mediacount}")
-    print(f"Profile Pic URL: {profile.profile_pic_url}")
+        if not match:
+            return jsonify({"error": "Failed to extract shortcode."}), 400
 
-    profile_info = {
-        'username': profile.username,
-        'full_name': profile.full_name,
-        'biography': profile.biography,  # Include biography field
-        'followers_count': profile.followers,
-        'following_count': profile.followees,
-        'post_count': profile.mediacount,
-        'profile_pic_url': profile.profile_pic_url
-    }
+        shortcode = match.group(1)
+        post = instaloader.Post.from_shortcode(L.context, shortcode)
 
-    return profile_info, None
+        # Collecting data
+        data = {
+            "caption": post.caption,
+            "likes": post.likes,
+            "media": []
+        }
+
+        # Handle carousel posts
+        if post.is_video:  # If it's a video post
+            data["media"].append({
+                "media_url": post.url,
+                "is_video": True,
+                "video_url": post.video_url
+            })
+        else:
+            # Check for carousel (multiple media)
+            if post.get_sidecar_nodes():
+                for item in post.get_sidecar_nodes():
+                    media_data = {
+                        "media_url": item.display_url,
+                        "is_video": item.is_video
+                    }
+                    if item.is_video:
+                        media_data["video_url"] = item.video_url
+                    data["media"].append(media_data)
+            else:
+                # Single media post
+                data["media"].append({
+                    "media_url": post.url,
+                    "is_video": post.is_video,
+                    "video_url": post.video_url if post.is_video else None
+                })
+
+        return jsonify(data)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
