@@ -6,7 +6,7 @@ from flask_cors import CORS
 from app.lyrics import lyrics_bp
 from app.media import media_bp
 from app.youtube import youtube_bp  # Import the Instagram blueprint
-from app.insta import insta_bp  # Import the Insta blueprint
+from stalking.insta import insta_bp  # Import the Insta blueprint
 from app.weather import weather_bp
 from app.crypto import crypto_bp
 from app.search import search_bp
