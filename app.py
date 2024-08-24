@@ -22,6 +22,11 @@ from app.pin import pin_bp
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
 
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+
 # Register all existing blueprints
 app.register_blueprint(lyrics_bp)
 app.register_blueprint(media_bp)
@@ -39,9 +44,5 @@ app.register_blueprint(spotify_bp)
 app.register_blueprint(spotifys_bp)
 app.register_blueprint(pin_bp)
 # Route for index page
-@app.route('/')
-def index():
-    return render_template('index.html')
-
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000)
