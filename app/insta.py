@@ -1,9 +1,25 @@
-# app/insta.py
 from flask import Blueprint, request, jsonify
 import instaloader
+import os
 
+# Blueprint for Instagram routes
 insta_bp = Blueprint('insta', __name__)
+
+# Create an instaloader object
 loader = instaloader.Instaloader()
+
+# Path to the session file
+session_file = os.path.join(os.path.dirname(__file__), 'session-insta')
+
+# Load session from the session-insta file
+if os.path.exists(session_file):
+    try:
+        loader.load_session_from_file(username=None, filename=session_file)
+        print("Session loaded successfully!")
+    except Exception as e:
+        print(f"Failed to load session: {str(e)}")
+else:
+    print("Session file not found. Please log in and save the session.")
 
 @insta_bp.route('/insta', methods=['GET'])
 def download_instagram():
