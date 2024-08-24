@@ -24,3 +24,4 @@ requests-html==0.10.0
 isodate
 Flask-CORS
 google-images-search
+gunicorn
