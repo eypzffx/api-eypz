@@ -24,11 +24,13 @@ def aio():
         # Get the JSON response from the external server
         data = response.json()
 
-        # Modify the JSON response
-        if 'creator' in data:
-            data['creator'] = 'Eypz'
+        # Extract the 'medias' field and set 'creator' to 'Eypz God'
+        result = {
+            "creator": "Eypz God",
+            "medias": data.get("result", {}).get("medias", [])
+        }
 
         # Return the modified JSON response
-        return jsonify(data)
+        return jsonify(result)
     except requests.RequestException as e:
         return jsonify({'error': str(e)}), 500
