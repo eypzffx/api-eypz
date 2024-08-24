@@ -4,7 +4,7 @@ from stalking.insta import get_instagram_profile
 
 instagram_bp = Blueprint('instagram', __name__)
 
-@instagram_bp.route('/insta', methods=['GET'])
+@instagram_bp.route('/instagram', methods=['GET'])
 def get_insta_profile():
     username = request.args.get('username')
     if not username:
