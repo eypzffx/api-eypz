@@ -1,59 +1,38 @@
+# app/insta.py
 from flask import Blueprint, request, jsonify
 import instaloader
-import re
 
 insta_bp = Blueprint('insta', __name__)
+loader = instaloader.Instaloader()
 
-@insta_bp.route('/insta_story', methods=['GET'])
-def download_insta_media():
+@insta_bp.route('/insta', methods=['GET'])
+def download_instagram():
     url = request.args.get('url')
     if not url:
-        return jsonify({"error": "URL parameter is required"}), 400
+        return jsonify({"error": "URL is required"}), 400
 
-    L = instaloader.Instaloader()
-
+    shortcode = url.split('/')[-2]
     try:
-        # Login with the provided credentials
-        L.login('eypzizumi', 'rihaeypz')
-    except Exception as e:
-        return jsonify({"error": "Login failed: " + str(e)}), 500
+        # Fetch the post using its shortcode
+        post = instaloader.Post.from_shortcode(loader.context, shortcode)
 
-    try:
+        # Collect all media URLs
         media_urls = []
-
-        if 'stories' in url:
-            # Story URL
-            username_match = re.search(r'instagram.com/stories/(.*?)/', url)
-            if not username_match:
-                return jsonify({"error": "Invalid stories URL"}), 400
-            username = username_match.group(1)
-            profile = instaloader.Profile.from_username(L.context, username)
-
-            for story in L.get_stories(userids=[profile.userid]):
-                for item in story.get_items():
-                    if item.is_video:
-                        media_urls.append(item.video_url)
-                    else:
-                        media_urls.append(item.url)
+        if post.is_video:
+            media_urls.append(post.video_url)
         else:
-            # Regular post URL
-            shortcode_match = re.search(r'instagram.com/p/([^/]+)/', url)
-            if not shortcode_match:
-                return jsonify({"error": "Invalid post URL"}), 400
-            shortcode = shortcode_match.group(1)
-            post = instaloader.Post.from_shortcode(L.context, shortcode)
+            media_urls.append(post.url)
 
-            if post.typename == 'GraphImage':
-                media_urls.append(post.url)
-            elif post.typename == 'GraphVideo':
-                media_urls.append(post.video_url)
-            elif post.typename == 'GraphSidecar':
-                for sidecar_node in post.get_sidecar_nodes():
-                    if sidecar_node.is_video:
-                        media_urls.append(sidecar_node.video_url)
-                    else:
-                        media_urls.append(sidecar_node.display_url)
+        # Add additional media URLs if the post is a carousel
+        for node in post.get_sidecar_nodes():
+            if node.is_video:
+                media_urls.append(node.video_url)
+            else:
+                media_urls.append(node.display_url)  # Use display_url for images
 
-        return jsonify({"media_urls": media_urls})
+        if media_urls:
+            return jsonify({"message": "Success", "media_urls": media_urls}), 200
+        else:
+            return jsonify({"error": "No media found"}), 500
     except Exception as e:
         return jsonify({"error": str(e)}), 500
