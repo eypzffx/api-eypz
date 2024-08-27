@@ -34,7 +34,7 @@ def get_download_url(video_id):
         info = ydl.extract_info(f'https://www.youtube.com/watch?v={video_id}', download=False)
         return info.get('url')
 
-@yt_blueprint.route('/ytdl/video', methods=['GET'])
+@yt_bp.route('/ytdl/video', methods=['GET'])
 def get_video_info():
     query = request.args.get('query')
     if not query:
