@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 import yt_dlp
 
-yt_blueprint = Blueprint('yt_blueprint', __name__)
+yt_bp = Blueprint('yt_bp', __name__)
 
 def search_youtube(query):
     ydl_opts = {
