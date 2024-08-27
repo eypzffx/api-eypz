@@ -36,7 +36,7 @@ def get_download_url(video_id):
 
 @yt_blueprint.route('/ytdl/video', methods=['GET'])
 def get_video_info():
-    query = request.args.get('url')
+    query = request.args.get('query')
     if not query:
         return jsonify({"error": "No query provided"}), 400
 
