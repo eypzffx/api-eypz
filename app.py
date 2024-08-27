@@ -4,6 +4,7 @@ from flask_cors import CORS
 
 # Import all existing blueprints
 from app.lyrics import lyrics_bp
+from app.yt import yt_bp
 from app.aio import aio_bp
 from app.media import media_bp
 from app.youtube import youtube_bp  # Import the Instagram blueprint
@@ -47,6 +48,7 @@ app.register_blueprint(spotifys_bp)
 app.register_blueprint(pin_bp)
 app.register_blueprint(aio_bp)
 app.register_blueprint(ytdl_bp)
+app.register_blueprint(yt_bp)
 # Route for index page
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000)
