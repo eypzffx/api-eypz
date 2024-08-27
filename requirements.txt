@@ -25,5 +25,5 @@ isodate
 Flask-CORS
 google-images-search
 gunicorn
-youtubesearchpython
-yt-dlp
+youtube-search-python==1.6.0
+yt-dlp==2024.8.25
