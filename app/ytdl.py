@@ -5,27 +5,40 @@ import yt_dlp
 ytdl_bp = Blueprint('ytdl', __name__)
 
 def get_video_info(url):
-    # Configure yt-dlp options to get the highest quality video and audio
+    """
+    Extract video information using yt-dlp.
+
+    Args:
+        url (str): The URL or search query.
+
+    Returns:
+        tuple: Contains title, video URL, description, author, and thumbnail URL.
+    """
+    # Configure yt-dlp options
     ydl_opts = {
-        'format': 'bestvideo+bestaudio/best',  # Combine best video and audio quality
-        'noplaylist': True,
-        'quiet': True,
+        'format': 'bestvideo+bestaudio/best',  # Get best video and audio
+        'noplaylist': True,                    # Don't download playlists
+        'quiet': True,                        # Suppress output
+        'headers': {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+        }
     }
+
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             print(f"Extracting info for URL: {url}")  # Debugging: Print URL being processed
             info = ydl.extract_info(url, download=False)
             
-            # For search results, extract the first video
+            # For search results, get the first video
             if 'entries' in info:
-                info = info['entries'][0]  # Get the first search result
+                info = info['entries'][0]
                 print(f"First search result info: {info}")
 
             # Find the best video format URL
             formats = info.get('formats', [])
             video_url = None
             for f in formats:
-                if f.get('vcodec') != 'none' and f.get('acodec') != 'none':  # Ensure both video and audio
+                if f.get('vcodec') != 'none' and f.get('acodec') != 'none':
                     video_url = f.get('url')
                     break
 
@@ -46,11 +59,17 @@ def get_video_info(url):
 
 @ytdl_bp.route('/ytdl', methods=['GET'])
 def youtube_download_link():
+    """
+    Handle the request to get video information.
+
+    Returns:
+        json: Contains video information or an error message.
+    """
     url = request.args.get('url')
     if not url:
         return jsonify({"error": "Please provide a 'url' parameter"}), 400
     
-    # If the URL is a text query, search on YouTube
+    # If the URL is a text query, convert to a YouTube search query
     if not url.startswith("http"):
         url = f"ytsearch:{url}"
         print(f"Converted text to search query: {url}")  # Debugging: Print converted search query
@@ -58,7 +77,7 @@ def youtube_download_link():
     try:
         title, video_url, description, author, thumbnail = get_video_info(url)
         return jsonify({
-            "message": f"Here is the download link for '{title}'",
+            "message": f"Here is the info for '{title}'",
             "download_url": video_url,
             "title": title,
             "author": author,
