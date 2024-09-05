@@ -24,10 +24,18 @@ def aio():
         # Get the JSON response from the external server
         data = response.json()
 
+        # Debugging: print out the response data to understand its structure
+        print(data)
+
         # Extract the 'message' field and get thumbnail and all _url
         messages = data.get("message", [])
-        thumbnail_url = messages[0].get("thumbnail") if messages else None  # Get the first thumbnail URL
-        media_urls = [message.get("_url") for message in messages if message.get("_url")]
+        if not messages:
+            return jsonify({'error': 'No messages found in response'}), 500
+        
+        thumbnail_url = messages[0].get("thumbnail") if messages else None
+
+        # Extract and deduplicate media URLs
+        media_urls = list(set(message.get("_url") for message in messages if message.get("_url")))
 
         # Prepare the result with 'creator', 'wm', 'thumbnail', and 'medias'
         result = {
@@ -41,3 +49,5 @@ def aio():
         return jsonify(result)
     except requests.RequestException as e:
         return jsonify({'error': str(e)}), 500
+    except ValueError as e:
+        return jsonify({'error': 'Invalid response format'}), 500
