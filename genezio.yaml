@@ -1,0 +1,9 @@
+frontend:
+    path: ./
+    publish: ""
+    scripts:
+        build: pip install -r requirements.txt
+        deploy: python app.py
+name: api-test
+region: eu-central-1
+yamlVersion: 2
