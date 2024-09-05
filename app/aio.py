@@ -13,8 +13,8 @@ def aio():
     # Load API key from environment variables
     api_key = os.getenv('API_KEY')
 
-    # Build the request URL
-    request_url = f'https://api.betabotz.eu.org/api/download/allin?url={url}&apikey={api_key}'
+    # Build the request URL with the new API endpoint
+    request_url = f'https://api.betabotz.eu.org/api/download/igdowloader?url={url}&apikey={api_key}'
 
     try:
         # Send the request to the external server
@@ -24,10 +24,17 @@ def aio():
         # Get the JSON response from the external server
         data = response.json()
 
-        # Extract the 'medias' field and set 'creator' to 'Eypz God'
+        # Extract the 'message' field and get thumbnail and all _url
+        messages = data.get("message", [])
+        thumbnail_url = messages[0].get("thumbnail") if messages else None  # Get the first thumbnail URL
+        media_urls = [message.get("_url") for message in messages if message.get("_url")]
+
+        # Prepare the result with 'creator', 'wm', 'thumbnail', and 'medias'
         result = {
             "creator": "Eypz God",
-            "medias": data.get("result", {}).get("medias", [])
+            "wm": "powered by Eypz",
+            "thumbnail": thumbnail_url,
+            "medias": media_urls
         }
 
         # Return the modified JSON response
