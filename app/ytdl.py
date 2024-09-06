@@ -14,8 +14,8 @@ def ytdl():
     # Load API key from environment variables
     api_key = os.getenv('API_KEY', 'eypz-izumi')  # Default to 'eypz-izumi' if not set
 
-    # Build the request URL
-    request_url = f'https://api.betabotz.eu.org/api/download/yt?url={url}&apikey={api_key}'
+    # Build the request URL with the new endpoint
+    request_url = f'https://api.betabotz.eu.org/api/download/allin?url={url}&apikey={api_key}'
 
     try:
         # Send the request to the external server
@@ -24,6 +24,10 @@ def ytdl():
 
         # Get the JSON response from the external server
         data = response.json()
+
+        # Ensure the expected keys are in the response
+        if "result" not in data:
+            return jsonify({'error': 'Invalid response from the external API'}), 500
 
         # Modify the 'creator' field to 'Eypz God' and keep the rest of the information
         result = {
@@ -42,5 +46,10 @@ def ytdl():
 
         # Return the modified JSON response
         return jsonify(result)
+
     except requests.RequestException as e:
-        return jsonify({'error': str(e)}), 500
+        return jsonify({'error': 'Request to external API failed', 'details': str(e)}), 500
+    except ValueError as e:
+        return jsonify({'error': 'Invalid JSON response from external API', 'details': str(e)}), 500
+    except KeyError as e:
+        return jsonify({'error': 'Missing data in external API response', 'details': str(e)}), 500
