@@ -12,11 +12,11 @@ def download_youtube():
     if not url:
         return jsonify({"status": False, "message": "URL parameter is missing."}), 400
 
-    # API endpoint to download YouTube media
-    api_endpoint = "https://api.betabotz.eu.org/api/download/allin"
+    # Updated API endpoint for downloading YouTube media
+    api_endpoint = "https://api.betabotz.eu.org/api/download/ytmp4"
     api_key = "eypz-izumi"
     
-    # Request to the external API
+    # Request to the external API with URL and API key as parameters
     response = requests.get(api_endpoint, params={'url': url, 'apikey': api_key})
     
     # Check if the API request was successful
@@ -32,20 +32,29 @@ def download_youtube():
     # Extract media information
     result = data.get('result', {})
     title = result.get('title')
-    thumbnail = result.get('thumbnail')
+    description = result.get('description')
+    video_id = result.get('id')
+    thumbnail = result.get('thumb')
+    source = result.get('source')
     duration = result.get('duration')
-    medias = result.get('medias', [])
+    
+    # Change the MP4 link format
+    original_mp4_link = result.get('mp4')
+    new_mp4_link = original_mp4_link.replace("api.betabotz.eu.org/api/tools/get-upload?id=", "api.eypz.c0m.in/")
 
-    # Return the extracted information
+    # Return the extracted information with the new MP4 link
     return jsonify({
         "status": True,
         "code": 200,
         "creator": "Eypz",
         "result": {
             "title": title,
+            "description": description,
+            "video_id": video_id,
             "thumbnail": thumbnail,
+            "source": source,
             "duration": duration,
-            "medias": medias
+            "mp4_link": new_mp4_link
         }
     })
 
