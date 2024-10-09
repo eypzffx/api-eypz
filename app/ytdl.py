@@ -42,12 +42,21 @@ def download_youtube():
     original_mp4_link = result.get('mp4')
 
     # Shorten the MP4 link
-    shorten_response = requests.get("https://api.eypz.c0m.in/shorten", params={'url': original_mp4_link})
-    if shorten_response.status_code == 200:
-        shorten_data = shorten_response.json()
-        short_url = shorten_data.get('short_url')
-    else:
+    shorten_api_url = "https://api.eypz.c0m.in/shorten"
+    shorten_response = requests.get(shorten_api_url, params={'url': original_mp4_link})
+
+    # Check if the shortening request was successful
+    if shorten_response.status_code != 200:
+        # Log the error for debugging
+        print(f"Shorten API response: {shorten_response.status_code} - {shorten_response.text}")
         return jsonify({"status": False, "message": "Failed to shorten the URL."}), 400
+    
+    shorten_data = shorten_response.json()
+    
+    # Check if short_url is in the response
+    short_url = shorten_data.get('short_url')
+    if not short_url:
+        return jsonify({"status": False, "message": "Shortened URL not found."}), 400
 
     # Return the extracted information with the shortened MP4 link
     return jsonify({
