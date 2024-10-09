@@ -1,5 +1,7 @@
-from flask import Blueprint, request, jsonify
+
+from flask import Blueprint, request, jsonify, send_file
 import requests
+import os
 
 # Create a blueprint for YouTube Downloader
 ytdl_bp = Blueprint('ytdl', __name__)
@@ -38,11 +40,30 @@ def download_youtube():
     source = result.get('source')
     duration = result.get('duration')
     
-    # Change the MP4 link format
+    # Get the original MP4 link
     original_mp4_link = result.get('mp4')
-    new_mp4_link = original_mp4_link.replace("api.betabotz.eu.org/api/tools/get-upload?id=", "api.eypz.c0m.in/")
+    if not original_mp4_link:
+        return jsonify({"status": False, "message": "MP4 link not found."}), 400
 
-    # Return the extracted information with the new MP4 link
+    # Download the MP4 file
+    video_response = requests.get(original_mp4_link, stream=True)
+    if video_response.status_code != 200:
+        return jsonify({"status": False, "message": "Failed to download video."}), 400
+
+    # Define the upload directory and filename
+    upload_directory = '../upload'
+    video_file_name = f"{video_id}.mp4"
+    video_file_path = os.path.join(upload_directory, video_file_name)
+
+    # Save the video to the specified directory
+    with open(video_file_path, 'wb') as f:
+        for chunk in video_response.iter_content(chunk_size=8192):
+            f.write(chunk)
+
+    # Construct the new URL for the uploaded video
+    new_video_link = f"https://api.eypz.c0m.in/upload/file/{video_file_name}"
+
+    # Return the extracted information with the new video link
     return jsonify({
         "status": True,
         "code": 200,
@@ -54,9 +75,21 @@ def download_youtube():
             "thumbnail": thumbnail,
             "source": source,
             "duration": duration,
-            "mp4_link": new_mp4_link
+            "mp4_link": new_video_link
         }
     })
+
+# Define a route to serve the uploaded video
+@ytdl_bp.route('/upload/file/<filename>', methods=['GET'])
+def serve_video(filename):
+    upload_directory = '../upload'
+    video_file_path = os.path.join(upload_directory, filename)
+
+    # Check if the file exists
+    if not os.path.exists(video_file_path):
+        return jsonify({"status": False, "message": "File not found."}), 404
+    
+    return send_file(video_file_path, as_attachment=True)
 
 # Error handler for not found routes
 @ytdl_bp.errorhandler(404)
