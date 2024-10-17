@@ -5,9 +5,9 @@ import yt_dlp
 ytdl_bp = Blueprint('ytdl', __name__)
 
 # Proxy details
-proxy_ip = "91.107.252.136"
-proxy_port = "80"
-proxy_protocol = "http"
+proxy_ip = "103.66.233.137"
+proxy_port = "4145"
+proxy_protocol = "socks4
 
 # Function to get video information
 def get_video_info(video_url):
