@@ -4,11 +4,17 @@ import yt_dlp
 # Create a blueprint for YouTube Downloader
 ytdl_bp = Blueprint('ytdl', __name__)
 
+# Proxy details
+proxy_ip = "37.131.164.48"
+proxy_port = "59341"
+proxy_protocol = "socks4"
+
 # Function to get video information
 def get_video_info(video_url):
     ydl_opts = {
         'format': 'best',
         'noplaylist': True,  # Avoid downloading playlists
+        'proxy': f'{proxy_protocol}://{proxy_ip}:{proxy_port}',  # Using the SOCKS4 proxy
     }
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         info = ydl.extract_info(video_url, download=False)  # Extract info without downloading
