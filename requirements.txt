@@ -26,4 +26,4 @@ Flask-CORS
 google-images-search
 gunicorn
 youtube-search-python==1.6.0
-yt-dlp = 2024.10.07
+yt-dlp==2024.10.07
