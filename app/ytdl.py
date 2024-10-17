@@ -1,80 +1,39 @@
 from flask import Blueprint, request, jsonify
-import requests
+import yt_dlp
 
 # Create a blueprint for YouTube Downloader
 ytdl_bp = Blueprint('ytdl', __name__)
 
-# Define the route for downloading YouTube media
+# Function to get video information
+def get_video_info(video_url):
+    ydl_opts = {
+        'format': 'best',
+        'noplaylist': True,  # Avoid downloading playlists
+    }
+    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+        info = ydl.extract_info(video_url, download=False)  # Extract info without downloading
+        video_info = {
+            'title': info.get('title'),
+            'duration': info.get('duration'),  # Duration in seconds
+            'author': info.get('uploader'),
+            'download_url': info['url']
+        }
+    return video_info
+
+# Route for YouTube downloader
 @ytdl_bp.route('/ytdl', methods=['GET'])
-def download_youtube():
-    # Get URL from request arguments
+def youtube_download_info():
     url = request.args.get('url')
     if not url:
-        return jsonify({"status": False, "message": "URL parameter is missing."}), 400
-
-    # Updated API endpoint for downloading YouTube media
-    api_endpoint = "https://api.betabotz.eu.org/api/download/ytmp4"
-    api_key = "eypz-izumi"
-    
-    # Request to the external API with URL and API key as parameters
-    response = requests.get(api_endpoint, params={'url': url, 'apikey': api_key})
-    
-    # Check if the API request was successful
-    if response.status_code != 200:
-        return jsonify({"status": False, "message": "Failed to fetch data from API."}), response.status_code
-    
-    data = response.json()
-
-    # Check the status of the response
-    if not data.get('status'):
-        return jsonify({"status": False, "message": "API response indicates failure."}), 400
-    
-    # Extract media information
-    result = data.get('result', {})
-    title = result.get('title')
-    description = result.get('description')
-    video_id = result.get('id')
-    thumbnail = result.get('thumb')
-    source = result.get('source')
-    duration = result.get('duration')
-    
-    # Get the original MP4 link
-    original_mp4_link = result.get('mp4')
-
-    # Shorten the MP4 link
-    shorten_api_url = "https://api.eypz.c0m.in/shorten"
-    shorten_response = requests.get(shorten_api_url, params={'url': original_mp4_link})
-
-    # Check if the shortening request was successful
-    if shorten_response.status_code != 200:
-        # Log the error for debugging
-        print(f"Shorten API response: {shorten_response.status_code} - {shorten_response.text}")
-        return jsonify({"status": False, "message": "Failed to shorten the URL."}), 400
-    
-    shorten_data = shorten_response.json()
-    
-    # Check if short_url is in the response
-    short_url = shorten_data.get('short_url')
-    if not short_url:
-        return jsonify({"status": False, "message": "Shortened URL not found."}), 400
-
-    # Return the extracted information with the shortened MP4 link
-    return jsonify({
-        "status": True,
-        "code": 200,
-        "creator": "Eypz",
-        "result": {
-            "title": title,
-            "description": description,
-            "video_id": video_id,
-            "thumbnail": thumbnail,
-            "source": source,
-            "duration": duration,
-            "mp4_link": short_url  # Use the shortened URL here
-        }
-    })
-
-# Error handler for not found routes
-@ytdl_bp.errorhandler(404)
-def not_found_error(error):
-    return jsonify({"status": False, "message": "Route not found."}), 404
+        return jsonify({"error": "No URL provided"}), 400
+    try:
+        video_info = get_video_info(url)
+        return jsonify({
+            "success": True,
+            "title": video_info['title'],
+            "duration": video_info['duration'],  # Duration is in seconds
+            "author": video_info['author'],
+            "download_url": video_info['download_url']
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
