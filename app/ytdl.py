@@ -1,5 +1,7 @@
 from flask import Blueprint, request, jsonify
 import yt_dlp
+from concurrent.futures import ThreadPoolExecutor
+import time
 
 # Create a blueprint for YouTube Downloader
 ytdl_bp = Blueprint('ytdl', __name__)
@@ -8,6 +10,9 @@ ytdl_bp = Blueprint('ytdl', __name__)
 proxy_ip = "103.66.233.137"
 proxy_port = "4145"
 proxy_protocol = "socks4"
+
+# Simple in-memory cache
+cache = {}
 
 # Function to get video information
 def get_video_info(video_url):
@@ -32,14 +37,29 @@ def youtube_download_info():
     url = request.args.get('url')
     if not url:
         return jsonify({"error": "No URL provided"}), 400
-    try:
-        video_info = get_video_info(url)
-        return jsonify({
-            "success": True,
-            "title": video_info['title'],
-            "duration": video_info['duration'],  # Duration is in seconds
-            "author": video_info['author'],
-            "download_url": video_info['download_url']
-        })
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+    
+    # Check if result is cached
+    if url in cache:
+        return jsonify({"success": True, **cache[url]})
+    
+    # Use ThreadPoolExecutor to handle video info extraction in a separate thread
+    with ThreadPoolExecutor() as executor:
+        future = executor.submit(get_video_info, url)
+        try:
+            video_info = future.result(timeout=10)  # Wait up to 10 seconds for the result
+            # Cache the result
+            cache[url] = {
+                "title": video_info['title'],
+                "duration": video_info['duration'],
+                "author": video_info['author'],
+                "download_url": video_info['download_url']
+            }
+            return jsonify({
+                "success": True,
+                "title": video_info['title'],
+                "duration": video_info['duration'],
+                "author": video_info['author'],
+                "download_url": video_info['download_url']
+            })
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
