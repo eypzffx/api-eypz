@@ -1,15 +1,9 @@
 from flask import Blueprint, request, jsonify
 import yt_dlp
 from concurrent.futures import ThreadPoolExecutor
-import time
 
 # Create a blueprint for YouTube Downloader
 ytdl_bp = Blueprint('ytdl', __name__)
-
-# Proxy details
-proxy_ip = "103.66.233.137"
-proxy_port = "4145"
-proxy_protocol = "socks4"
 
 # Simple in-memory cache
 cache = {}
@@ -19,8 +13,10 @@ def get_video_info(video_url):
     ydl_opts = {
         'format': 'best',
         'noplaylist': True,  # Avoid downloading playlists
-        'proxy': f'{proxy_protocol}://{proxy_ip}:{proxy_port}',  # Using the SOCKS4 proxy
+        'socket_timeout': 10,  # Set a shorter timeout for faster error handling
+        'retry': 3,  # Retry on failure
     }
+    
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         info = ydl.extract_info(video_url, download=False)  # Extract info without downloading
         video_info = {
