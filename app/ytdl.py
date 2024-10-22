@@ -1,61 +1,66 @@
 from flask import Blueprint, request, jsonify
-import yt_dlp
-from concurrent.futures import ThreadPoolExecutor
+import requests
 
 # Create a blueprint for YouTube Downloader
 ytdl_bp = Blueprint('ytdl', __name__)
 
-# Simple in-memory cache
-cache = {}
+# URL of your URL shortener API
+SHORTENER_API_URL = 'https://api.eypz.c0m.in/shorten?url='
 
-# Function to get video information
-def get_video_info(video_url):
-    ydl_opts = {
-        'format': 'best',
-        'noplaylist': True,  # Avoid downloading playlists
-        'socket_timeout': 10,  # Set a shorter timeout for faster error handling
-        'retry': 3,  # Retry on failure
-    }
-    
-    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        info = ydl.extract_info(video_url, download=False)  # Extract info without downloading
-        video_info = {
-            'title': info.get('title'),
-            'duration': info.get('duration'),  # Duration in seconds
-            'author': info.get('uploader'),
-            'download_url': info['url']
-        }
-    return video_info
+# Function to shorten URLs using the shortener API
+def shorten_url(url):
+    try:
+        shortener_response = requests.get(SHORTENER_API_URL + url)
+        if shortener_response.status_code == 200:
+            short_data = shortener_response.json()
+            return short_data.get('short_url')  # Get the shortened URL from the response
+        else:
+            return None
+    except Exception as e:
+        return None
 
-# Route for YouTube downloader
 @ytdl_bp.route('/ytdl', methods=['GET'])
-def youtube_download_info():
-    url = request.args.get('url')
-    if not url:
-        return jsonify({"error": "No URL provided"}), 400
+def fetch_video_details():
+    # Get the YouTube video URL from the query parameter
+    video_url = request.args.get('url')
     
-    # Check if result is cached
-    if url in cache:
-        return jsonify({"success": True, **cache[url]})
-    
-    # Use ThreadPoolExecutor to handle video info extraction in a separate thread
-    with ThreadPoolExecutor() as executor:
-        future = executor.submit(get_video_info, url)
-        try:
-            video_info = future.result(timeout=10)  # Wait up to 10 seconds for the result
-            # Cache the result
-            cache[url] = {
-                "title": video_info['title'],
-                "duration": video_info['duration'],
-                "author": video_info['author'],
-                "download_url": video_info['download_url']
+    if not video_url:
+        return jsonify({"error": "Missing video URL"}), 400
+
+    # Your BetaBotz API URL
+    api_url = f"https://api.betabotz.eu.org/api/download/ytmp4?url={video_url}&apikey=eypz-izumi"
+
+    # Fetch the data from the external API
+    response = requests.get(api_url)
+
+    # Check if the request was successful
+    if response.status_code == 200:
+        data = response.json()
+
+        # Extract the relevant details from the 'result' field
+        if data['status']:
+            mp3_url = data['result']['mp3']
+            mp4_url = data['result']['mp4']
+
+            # Shorten the download URLs
+            shortened_mp3 = shorten_url(mp3_url) or mp3_url  # Fall back to original if shortening fails
+            shortened_mp4 = shorten_url(mp4_url) or mp4_url  # Fall back to original if shortening fails
+
+            video_details = {
+                "creator": "Eypz",  # Set the creator name to "Eypz"
+                "title": data['result']['title'],
+                "description": data['result']['description'],
+                "id": data['result']['id'],
+                "thumbnail": data['result']['thumb'],
+                "source_url": data['result']['source'],
+                "duration": data['result']['duration'],
+                "download_links": {
+                    "mp3": shortened_mp3,
+                    "mp4": shortened_mp4
+                }
             }
-            return jsonify({
-                "success": True,
-                "title": video_info['title'],
-                "duration": video_info['duration'],
-                "author": video_info['author'],
-                "download_url": video_info['download_url']
-            })
-        except Exception as e:
-            return jsonify({"error": str(e)}), 500
+            return jsonify(video_details)  # Return the modified response with shortened URLs
+        else:
+            return jsonify({"error": "Failed to fetch video details"}), 500
+    else:
+        return jsonify({"error": "Failed to fetch data from API"}), response.status_code
