@@ -5,7 +5,7 @@ import requests
 ytdl_bp = Blueprint('ytdl', __name__)
 
 # URL of your URL shortener API
-SHORTENER_API_URL = 'https://api-test-ajko.onrender.com/shorten?url='
+SHORTENER_API_URL = 'https://combative-sarine-eypz-god-d4cce0fc.koyeb.app/shorten?url='
 
 # Function to shorten URLs using the shortener API
 def shorten_url(url):
