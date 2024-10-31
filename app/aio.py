@@ -1,20 +1,17 @@
 from flask import Blueprint, request, jsonify
 import requests
-import os
 
 aio_bp = Blueprint('aio', __name__)
 
-@aio_bp.route('/aio', methods=['GET'])
+@aio_bp.route('/igdl', methods=['GET'])
 def aio():
+    # Get the URL parameter from the request
     url = request.args.get('url')
     if not url:
         return jsonify({'error': 'URL parameter is required'}), 400
 
-    # Load API key from environment variables
-    api_key = os.getenv('API_KEY')
-
-    # Build the request URL with the new API endpoint
-    request_url = f'https://api.betabotz.eu.org/api/download/igdowloader?url={url}&apikey={api_key}'
+    # Construct the request URL with the API key included
+    request_url = f'https://api.betabotz.eu.org/api/download/igdowloader?url={url}&apikey=eypz-izumi'
 
     try:
         # Send the request to the external server
@@ -24,30 +21,30 @@ def aio():
         # Get the JSON response from the external server
         data = response.json()
 
-        # Debugging: print out the response data to understand its structure
-        print(data)
-
-        # Extract the 'message' field and get thumbnail and all _url
+        # Extract media URLs from the message
         messages = data.get("message", [])
         if not messages:
             return jsonify({'error': 'No messages found in response'}), 500
         
-        thumbnail_url = messages[0].get("thumbnail") if messages else None
+        # Initialize a list to hold media URLs
+        media_urls = []
 
-        # Extract and deduplicate media URLs
-        media_urls = list(set(message.get("_url") for message in messages if message.get("_url")))
+        for message in messages:
+            # Check if '_url' exists and add it to the media_urls list
+            media_url = message.get("_url")
+            if media_url:
+                media_urls.append(media_url)
 
-        # Prepare the result with 'creator', 'wm', 'thumbnail', and 'medias'
+        # Prepare the result in the desired format
         result = {
-            "creator": "Eypz God",
-            "wm": "powered by Eypz",
-            "thumbnail": thumbnail_url,
-            "medias": media_urls
+            "creator": "Eypz",
+            "medias": media_urls  # All media URLs in a list format
         }
 
         # Return the modified JSON response
         return jsonify(result)
+
     except requests.RequestException as e:
         return jsonify({'error': str(e)}), 500
-    except ValueError as e:
+    except ValueError:
         return jsonify({'error': 'Invalid response format'}), 500
