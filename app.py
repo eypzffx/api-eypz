@@ -21,6 +21,7 @@ from app.spotify import spotify_bp
 from app.spotifysearch import spotifys_bp
 from app.pin import pin_bp
 from app.ytdl import ytdl_bp
+from upload.routes import upload_bp
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
@@ -49,6 +50,7 @@ app.register_blueprint(pin_bp)
 app.register_blueprint(aio_bp)
 app.register_blueprint(ytdl_bp)
 app.register_blueprint(yt_bp)
+app.register_blueprint(upload_bp)
 # Route for index page
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000)
