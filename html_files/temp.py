@@ -1,10 +1,13 @@
 # html/html.py
-from flask import Blueprint, render_template_string, request
+from flask import Blueprint, render_template_string, request, jsonify
 import random
 import string
 
 # Define the blueprint
 html_bp = Blueprint('html_bp', __name__)
+
+# Initialize a dictionary to store HTML code for temporary URLs
+html_storage = {}
 
 # Function to generate a random temporary URL
 def generate_random_url():
@@ -85,7 +88,7 @@ def test_html():
     # Generate a random URL for the test
     temp_url = generate_random_url()
 
-    # Store the HTML code in the dictionary (you might want to use a database for production)
+    # Store the HTML code in the dictionary
     html_storage[temp_url] = html_code
 
     # Return the test URL
