@@ -1,12 +1,10 @@
-# html/html.py
-from flask import Blueprint, render_template_string, request, jsonify
+from flask import Flask, request, jsonify, render_template_string
 import random
 import string
 
-# Define the blueprint
-html_bp = Blueprint('html_bp', __name__)
+app = Flask(__name__)
 
-# Initialize a dictionary to store HTML code for temporary URLs
+# Store HTML code temporarily (in-memory for demo purposes)
 html_storage = {}
 
 # Function to generate a random temporary URL
@@ -14,7 +12,7 @@ def generate_random_url():
     return ''.join(random.choices(string.ascii_letters + string.digits, k=8))
 
 # Route to serve the HTML form for users to input their HTML
-@html_bp.route('/html', methods=['GET'])
+@app.route('/html', methods=['GET'])
 def index():
     return render_template_string('''
     <!DOCTYPE html>
@@ -79,7 +77,7 @@ def index():
     ''')
 
 # Route to handle HTML code submission and generate the temporary URL
-@html_bp.route('/html/testhtml', methods=['POST'])
+@app.route('/html/testhtml', methods=['POST'])
 def test_html():
     html_code = request.form.get("html_code", "")
     if not html_code:
@@ -88,28 +86,14 @@ def test_html():
     # Generate a random URL for the test
     temp_url = generate_random_url()
 
-    # Store the HTML code in the dictionary
+    # Store the HTML code in the dictionary (you might want to use a database for production)
     html_storage[temp_url] = html_code
 
     # Return the test URL
-    return render_template_string('''
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Temporary Webpage Created</title>
-    </head>
-    <body>
-      <h1>Your Temporary Webpage is Ready!</h1>
-      <p>You can view your HTML page by clicking the link below:</p>
-      <a href="/html/{{ temp_url }}" target="_blank" class="link">View Temporary Webpage</a>
-    </body>
-    </html>
-    ''', temp_url=temp_url)
+    return jsonify({"link": f"/html/{temp_url}"}), 200
 
 # Route to show HTML code from the temporary URL
-@html_bp.route('/html/<temp_url>', methods=['GET'])
+@app.route('/html/<temp_url>', methods=['GET'])
 def show_html(temp_url):
     # Retrieve the HTML code from storage using the temp URL
     html_code = html_storage.get(temp_url)
@@ -119,3 +103,6 @@ def show_html(temp_url):
 
     # Display the stored HTML code
     return html_code
+
+if __name__ == '__main__':
+    app.run(debug=True, host="0.0.0.0", port=5000)
