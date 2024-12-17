@@ -80,7 +80,13 @@ def index():
 # Route to handle HTML code submission and generate the temporary URL
 @html_bp.route('/html/testhtml', methods=['POST'])
 def test_html():
-    html_code = request.form.get("html_code", "")
+    # Get JSON data from the request body
+    data = request.get_json()
+
+    # Extract html_code from the JSON
+    html_code = data.get("html_code", "")
+    
+    # Handle the case where no HTML code is provided
     if not html_code:
         return jsonify({"error": "No HTML code provided!"}), 400
 
