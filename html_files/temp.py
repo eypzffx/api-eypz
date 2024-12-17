@@ -3,7 +3,7 @@ import random
 import string
 
 # Define the blueprint
-html_dp = Blueprint('html_dp', __name__)
+html_bp = Blueprint('html_dp', __name__)
 
 # Store HTML code temporarily (in-memory for demo purposes)
 html_storage = {}
