@@ -1,8 +1,9 @@
-from flask import Flask, request, jsonify, render_template_string
+from flask import Blueprint, Flask, request, jsonify, render_template_string
 import random
 import string
 
-app = Flask(__name__)
+# Define the blueprint
+html_dp = Blueprint('html_dp', __name__)
 
 # Store HTML code temporarily (in-memory for demo purposes)
 html_storage = {}
@@ -12,7 +13,7 @@ def generate_random_url():
     return ''.join(random.choices(string.ascii_letters + string.digits, k=8))
 
 # Route to serve the HTML form for users to input their HTML
-@app.route('/html', methods=['GET'])
+@html_dp.route('/html', methods=['GET'])
 def index():
     return render_template_string('''
     <!DOCTYPE html>
@@ -77,7 +78,7 @@ def index():
     ''')
 
 # Route to handle HTML code submission and generate the temporary URL
-@app.route('/html/testhtml', methods=['POST'])
+@html_dp.route('/html/testhtml', methods=['POST'])
 def test_html():
     html_code = request.form.get("html_code", "")
     if not html_code:
@@ -93,7 +94,7 @@ def test_html():
     return jsonify({"link": f"/html/{temp_url}"}), 200
 
 # Route to show HTML code from the temporary URL
-@app.route('/html/<temp_url>', methods=['GET'])
+@html_dp.route('/html/<temp_url>', methods=['GET'])
 def show_html(temp_url):
     # Retrieve the HTML code from storage using the temp URL
     html_code = html_storage.get(temp_url)
@@ -103,6 +104,3 @@ def show_html(temp_url):
 
     # Display the stored HTML code
     return html_code
-
-if __name__ == '__main__':
-    app.run(debug=True, host="0.0.0.0", port=5000)
