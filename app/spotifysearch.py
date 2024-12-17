@@ -32,7 +32,7 @@ def search_spotify(query, access_token):
 access_token = get_spotify_access_token(CLIENT_ID, CLIENT_SECRET)
 
 # Define the search endpoint in the Blueprint
-@spotifys_bp.route('/search', methods=['GET'])
+@spotifys_bp.route('/spotify/search', methods=['GET'])
 def search():
     # Get the search query parameter
     query = request.args.get('q')
