@@ -1,4 +1,3 @@
-# app.py
 from flask import Flask, render_template
 from flask_cors import CORS
 
@@ -18,7 +17,7 @@ from app.trivia import trivia_bp
 from app.shorten import shorten_bp
 from app.image_search import image_search_bp
 from app.spotify import spotify_bp
-from app.spotifysearch import spotifys_bp
+from app.spotifysearch import spotifys_bp  # Import the new Spotify search Blueprint
 from app.pin import pin_bp
 from app.ytdl import ytdl_bp
 from upload.routes import upload_bp
@@ -29,7 +28,6 @@ CORS(app)  # Enable CORS for all routes
 @app.route('/')
 def index():
     return render_template('index.html')
-
 
 # Register all existing blueprints
 app.register_blueprint(lyrics_bp)
@@ -45,12 +43,13 @@ app.register_blueprint(trivia_bp)
 app.register_blueprint(shorten_bp)
 app.register_blueprint(image_search_bp)
 app.register_blueprint(spotify_bp)
-app.register_blueprint(spotifys_bp)
+app.register_blueprint(spotifys_bp)  # Register the Spotify search Blueprint
 app.register_blueprint(pin_bp)
 app.register_blueprint(aio_bp)
 app.register_blueprint(ytdl_bp)
 app.register_blueprint(yt_bp)
 app.register_blueprint(upload_bp)
+
 # Route for index page
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000)
