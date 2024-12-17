@@ -21,7 +21,7 @@ from app.spotifysearch import spotifys_bp  # Import the new Spotify search Bluep
 from app.pin import pin_bp
 from app.ytdl import ytdl_bp
 from upload.routes import upload_bp
-from html.temp import html_bp
+from html_files.temp import html_bp
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
