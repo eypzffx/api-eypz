@@ -27,7 +27,6 @@ def index():
 # Register all existing blueprints
 app.register_blueprint(media_bp)
 app.register_blueprint(youtube_bp)  # Register the Instagram blueprint
-app.register_blueprint(insta_bp)  # Register the Insta blueprint
 app.register_blueprint(weather_bp)
 app.register_blueprint(crypto_bp)
 app.register_blueprint(nsfw_bp)
