@@ -81,7 +81,7 @@ def index():
 @html_bp.route('/html/testhtml', methods=['POST'])
 def test_html():
     # Get JSON data from the request body
-    data = request.form
+    data = request.get_json()
     # Extract html_code from the JSON
     html_code = data.get("html_code", "")
     
