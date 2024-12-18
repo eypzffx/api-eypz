@@ -3,76 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Eypz API's</title>
-    <link rel="stylesheet" href="static/style.css">
+    <title>Eypz API</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="welcome-message">Welcome to Eypz API</div>
-    <div class="container">
-        <div class="header">
-            <div class="main-title">Eypz API's</div>
-        </div>
-        <!-- Anime Section -->
-        <div class="subtitle" onclick="toggleButtons('anime-buttons')">
-            Anime
-            <span class="arrow">&#9660;</span>
-        </div>
-        <div class="buttons" id="anime-buttons">
-            <a href="https://combative-sarine-eypz-god-d4cce0fc.koyeb.app/nsfw/neko" class="button">NSFW Neko</a>
-            <a href="https://combative-sarine-eypz-god-d4cce0fc.koyeb.app/nsfw/neko" class="button">NSFW Waifu</a>
-            <a href="https://combative-sarine-eypz-god-d4cce0fc.koyeb.app/anime-g" class="button">Anime Girl</a>
-            <a href="https://combative-sarine-eypz-god-d4cce0fc.koyeb.app/anime-b" class="button">Anime Boy</a>
-            <a href="https://combative-sarine-eypz-god-d4cce0fc.koyeb.app/tsunade" class="button">Tsunade</a>
-            <a href="https://combative-sarine-eypz-god-d4cce0fc.koyeb.app/naruto" class="button">Naruto</a>
-            <a href="https://combative-sarine-eypz-god-d4cce0fc.koyeb.app/image" class="button">Random Anime Image</a>
-        </div>
-        <!-- Media Section -->
-        <div class="subtitle" onclick="toggleButtons('media-buttons')">
-            Media
-            <span class="arrow">&#9660;</span>
-        </div>
-        <div class="buttons" id="media-buttons">
-            <a href="https://combative-sarine-eypz-god-d4cce0fc.koyeb.app/cat" class="button">Cat Image</a>
-            <a href="https://combative-sarine-eypz-god-d4cce0fc.koyeb.app/download_thumbnail?url=https://youtu.be/pvHsFrnWraM?si=-TFzBU5-ltu_DbWG" class="button">YouTube Thumbnail</a>
-            <a href="https://combative-sarine-eypz-god-d4cce0fc.koyeb.app/youtube?search=Amv%20quick%20edit" class="button">YouTube Search</a>
-            <a href="https://combative-sarine-eypz-god-d4cce0fc.koyeb.app/lyrics?q=wanna%20be%20yours" class="button">Lyrics</a>
-        </div>
-        <!-- Info Section -->
-        <div class="subtitle" onclick="toggleButtons('info-buttons')">
-            Info
-            <span class="arrow">&#9660;</span>
-        </div>
-        <div class="buttons" id="info-buttons">
-            <a href="https://combative-sarine-eypz-god-d4cce0fc.koyeb.appinfo/weather?city=%20Thiruvananthapuram" class="button">Weather</a>
-        </div>
-        <!-- Game Section -->
-        <div class="subtitle" onclick="toggleButtons('game-buttons')">
-            Game
-            <span class="arrow">&#9660;</span>
-        </div>
-        <div class="buttons" id="game-buttons">
-            <a href="https://combative-sarine-eypz-god-d4cce0fc.koyeb.app/random" class="button">Trivia</a>
-        </div>
-        <!-- Fact Section -->
-        <div class="subtitle" onclick="toggleButtons('fact-buttons')">
-            Fact
-            <span class="arrow">&#9660;</span>
-        </div>
-        <div class="buttons" id="fact-buttons">
-            <a href="https://combative-sarine-eypz-god-d4cce0fc.koyeb.app/details/technology" class="button">Technology</a>
-            <a href="https://combative-sarine-eypz-god-d4cce0fc.koyeb.app/cat-fact" class="button">Cat Fact</a>
-            <a href="https://combative-sarine-eypz-god-d4cce0fc.koyeb.appdetails/history" class="button">History</a>
-            <a href="https://combative-sarine-eypz-god-d4cce0fc.koyeb.appdetails/space" class="button">Space</a>
-            <a href="https://combative-sarine-eypz-god-d4cce0fc.koyeb.app/details/animals" class="button">Animals</a>
+
+    <!-- Sidebar (Initially Hidden) -->
+    <div class="sidebar" id="sidebar">
+        <a href="https://combative-sarine-eypz-god-d4cce0fc.koyeb.app/igdl?url=https://www.instagram.com/reel/DBvYs6iyA84/?igsh=NmkxMmxoNDZtdmFx">Instagram Video Downloader</a>
+        <a href="https://combative-sarine-eypz-god-d4cce0fc.koyeb.app/ytdl?url=https://www.youtube.com/watch?v=nyuo9-OjNNg">YouTube Video Downloader</a>
+        <a href="https://combative-sarine-eypz-god-d4cce0fc.koyeb.app/naruto">Naruto API</a>
+        <a href="https://combative-sarine-eypz-god-d4cce0fc.koyeb.app/image">Anime Image</a>
+        <a href="https://combative-sarine-eypz-god-d4cce0fc.koyeb.app/tsunade">Tsunade API</a>
+        <a href="https://combative-sarine-eypz-god-d4cce0fc.koyeb.app/anime-b">Anime Boy</a>
+        <a href="https://combative-sarine-eypz-god-d4cce0fc.koyeb.app/anime-g">Anime Girl</a>
+        <a href="https://combative-sarine-eypz-god-d4cce0fc.koyeb.app/nsfw/neko">NSFW Neko</a>
+        <a href="https://combative-sarine-eypz-god-d4cce0fc.koyeb.app/nsfw/waifu">NSFW Waifu</a>
+        <a href="https://combative-sarine-eypz-god-d4cce0fc.koyeb.app/pin?url=https://pin.it/3gPFfAznY">Pinterest Media Downloader</a>
+        <a href="https://combative-sarine-eypz-god-d4cce0fc.koyeb.app/random">Trivia API</a>
+        <a href="https://combative-sarine-eypz-god-d4cce0fc.koyeb.app/info/weather?city=%20Thiruvananthapuram">Weather API</a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content" id="content">
+        <header>
+            <h1>Eypz API</h1>
+            <button class="hamburger" id="hamburger" onclick="toggleSidebar()">
+                <div></div>
+                <div></div>
+                <div></div>
+            </button>
+        </header>
+
+        <div class="intro">
+            <h2>Welcome to Eypz API Platform</h2>
+            <p>I'm providing free APIs to help you with your projects.</p>
         </div>
     </div>
+
     <script>
-        function toggleButtons(id) {
-            const buttons = document.getElementById(id);
-            const subtitle = document.querySelector(`#${id}`).previousElementSibling;
-            buttons.classList.toggle('expanded');
-            subtitle.classList.toggle('expanded');
+        // Toggle Sidebar visibility
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const content = document.getElementById('content');
+
+            if (sidebar.style.left === '0px') {
+                sidebar.style.left = '-250px'; // Close sidebar
+                content.style.marginLeft = '0';
+            } else {
+                sidebar.style.left = '0px'; // Open sidebar
+                content.style.marginLeft = '250px';
+            }
         }
     </script>
+
 </body>
 </html>
