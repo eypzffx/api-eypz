@@ -14,6 +14,7 @@ from app.shorten import shorten_bp
 from app.spotify import spotify_bp
 from app.pin import pin_bp
 from app.ytdl import ytdl_bp
+from app.ytdl import api_bp
 from upload.routes import upload_bp
 from html_files.temp import html_bp
 
@@ -37,6 +38,7 @@ app.register_blueprint(spotify_bp)
 app.register_blueprint(pin_bp)
 app.register_blueprint(aio_bp)
 app.register_blueprint(ytdl_bp)
+app.register_blueprint(api_bp)
 app.register_blueprint(upload_bp)
 app.register_blueprint(html_bp)
 
