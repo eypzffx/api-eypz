@@ -37,31 +37,34 @@ def fetch_video_details():
     if response.status_code == 200:
         data = response.json()
 
-        # Extract the relevant details from the 'result' field
-        if data['status']:
-            result = data['result']
-            mp3_url = result['mp3']
-            mp4_url = result['mp4']
+        # Verify the structure of the response
+        if data.get("status") and "result" in data:
+            result = data["result"]
 
-            # Shorten the download URLs
+            # Extract and shorten the URLs
+            mp3_url = result.get("mp3")
+            mp4_url = result.get("mp4")
             shortened_mp3 = shorten_url(mp3_url) or mp3_url  # Fall back to original if shortening fails
             shortened_mp4 = shorten_url(mp4_url) or mp4_url  # Fall back to original if shortening fails
 
+            # Prepare the video details response
             video_details = {
-                "creator": result.get("creator", "Eypz"),  # Use the creator field if available, otherwise default to "Eypz"
-                "title": result['title'],
-                "description": result['description'],
-                "id": result['id'],
-                "thumbnail": result['thumb'],
-                "source_url": result['source'],
-                "duration": result['duration'],
+                "creator": result.get("creator", "Eypz"),  # Use API creator or fallback
+                "title": result.get("title"),
+                "description": result.get("description"),
+                "id": result.get("id"),
+                "thumbnail": result.get("thumb"),
+                "source_url": result.get("source"),
+                "duration": result.get("duration"),
                 "download_links": {
                     "mp3": shortened_mp3,
                     "mp4": shortened_mp4
                 }
             }
-            return jsonify(video_details)  # Return the modified response with shortened URLs
+            return jsonify(video_details)
         else:
-            return jsonify({"error": "Failed to fetch video details"}), 500
+            # Handle cases where the structure is invalid or status is False
+            return jsonify({"error": "Invalid API response structure"}), 500
     else:
-        return jsonify({"error": "Failed to fetch data from API"}), response.status_code
+        # Log the response for debugging
+        return jsonify({"error": f"API call failed with status code {response.status_code}"}), response.status_code
