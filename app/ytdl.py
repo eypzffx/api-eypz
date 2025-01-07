@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
 import requests
+import yt_dlp  # For fetching video details
 
 # Create a blueprint for YouTube Downloader
 ytdl_bp = Blueprint('ytdl', __name__)
@@ -10,78 +11,67 @@ SHORTENER_API_URL = 'https://combative-sarine-eypz-god-d4cce0fc.koyeb.app/shorte
 # Function to shorten URLs using the shortener API
 def shorten_url(url):
     try:
-        headers = {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
-        }
-        shortener_response = requests.get(SHORTENER_API_URL + url, headers=headers)
+        shortener_response = requests.get(SHORTENER_API_URL + url)
         if shortener_response.status_code == 200:
             short_data = shortener_response.json()
             return short_data.get('short_url')  # Get the shortened URL from the response
         else:
-            print(f"Shortener API error: {shortener_response.status_code} {shortener_response.text}")
             return None
     except Exception as e:
-        print(f"Error shortening URL: {str(e)}")
+        return None
+
+# New method to fetch video details using yt-dlp
+def fetch_video_details_yt_dlp(video_url):
+    try:
+        ydl_opts = {
+            'quiet': True,  # Suppress unnecessary output
+            'force_generic_extractor': True,  # Use a generic extractor
+        }
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            info_dict = ydl.extract_info(video_url, download=False)
+            return {
+                'title': info_dict.get('title'),
+                'description': info_dict.get('description'),
+                'thumbnail': info_dict.get('thumbnail'),
+                'duration': info_dict.get('duration'),
+                'id': info_dict.get('id'),
+                'source_url': video_url,
+            }
+    except Exception as e:
         return None
 
 @ytdl_bp.route('/ytdl', methods=['GET'])
 def fetch_video_details():
     # Get the YouTube video URL from the query parameter
     video_url = request.args.get('url')
-    
     if not video_url:
         return jsonify({"error": "Missing video URL"}), 400
 
-    # BetaBotz API URL
-    api_url = f"https://api.betabotz.eu.org/api/download/ytmp4?url={video_url}&apikey=eypz-izumi"
+    # Construct the direct API URLs for audio and video downloads
+    api_audio_url = f"https://api.betabotz.eu.org/api/download/get-YoutubeResult?url={video_url}&type=audio&xky=xT%C2%8CTzK%C2%87N7K%7BS%C2%8CS%C2%82NyMuM"
+    api_video_url = f"https://api.betabotz.eu.org/api/download/get-YoutubeResult?url={video_url}&type=video&xky=xT%C2%8CTzK%C2%87N7K%7BS%C2%8CS%C2%82NyMuM"
 
-    try:
-        # Adding headers to prevent 403 errors
-        headers = {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+    # Shorten the URLs
+    shortened_audio = shorten_url(api_audio_url) or api_audio_url  # Fall back to the original if shortening fails
+    shortened_video = shorten_url(api_video_url) or api_video_url  # Fall back to the original if shortening fails
+
+    # Fetch additional video details using yt-dlp
+    video_details_yt_dlp = fetch_video_details_yt_dlp(video_url)
+
+    if video_details_yt_dlp is None:
+        return jsonify({"error": "Failed to fetch video details"}), 500
+
+    # Return the final result by merging video details
+    return jsonify({
+        "creator": "Eypz",  # Set the creator name
+        "title": video_details_yt_dlp['title'],
+        "description": video_details_yt_dlp['description'],
+        "thumbnail": video_details_yt_dlp['thumbnail'],
+        "duration": video_details_yt_dlp['duration'],
+        "id": video_details_yt_dlp['id'],
+        "source_url": video_details_yt_dlp['source_url'],
+        "download_links": {
+            "audio": shortened_audio,
+            "video": shortened_video
         }
-
-        # Fetch the data from the external API
-        response = requests.get(api_url, headers=headers)
-
-        # Check if the request was successful
-        if response.status_code == 200:
-            data = response.json()
-
-            # Verify the response structure
-            if data.get("status") and "result" in data:
-                result = data["result"]
-
-                # Extract and shorten the URLs
-                mp3_url = result.get("mp3")
-                mp4_url = result.get("mp4")
-                shortened_mp3 = shorten_url(mp3_url) or mp3_url  # Fallback to original if shortening fails
-                shortened_mp4 = shorten_url(mp4_url) or mp4_url  # Fallback to original if shortening fails
-
-                # Prepare the video details response
-                video_details = {
-                    "creator": result.get("creator", "Eypz"),  # Use API creator or fallback
-                    "title": result.get("title"),
-                    "description": result.get("description"),
-                    "id": result.get("id"),
-                    "thumbnail": result.get("thumb"),
-                    "source_url": result.get("source"),
-                    "duration": result.get("duration"),
-                    "download_links": {
-                        "mp3": shortened_mp3,
-                        "mp4": shortened_mp4
-                    }
-                }
-                return jsonify(video_details)
-
-            else:
-                return jsonify({"error": "Invalid API response structure"}), 500
-
-        elif response.status_code == 403:
-            return jsonify({"error": "Forbidden: API key may be invalid or server is blocked"}), 403
-
-        else:
-            return jsonify({"error": f"Failed to fetch data from API. Status Code: {response.status_code}"}), response.status_code
-
-    except Exception as e:
-        return jsonify({"error": f"An unexpected error occurred: {str(e)}"}), 500
+    })
