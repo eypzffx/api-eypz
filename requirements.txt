@@ -21,4 +21,4 @@ requests-html==0.10.0
 isodate
 Flask-CORS
 gunicorn
-yt-dlp
+pytube
