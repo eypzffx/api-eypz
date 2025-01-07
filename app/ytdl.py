@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 import requests
-import yt_dlp  # For fetching video details
+from pytube import YouTube  # For fetching video details
 
 # Create a blueprint for YouTube Downloader
 ytdl_bp = Blueprint('ytdl', __name__)
@@ -20,23 +20,23 @@ def shorten_url(url):
     except Exception as e:
         return None
 
-# New method to fetch video details using yt-dlp
-def fetch_video_details_yt_dlp(video_url):
+# Method to fetch video details using pytube
+def fetch_video_details_pytube(video_url):
     try:
-        ydl_opts = {
-            'quiet': True,  # Suppress unnecessary output
-            'force_generic_extractor': True,  # Use a generic extractor
+        # Create a YouTube object using pytube
+        yt = YouTube(video_url)
+
+        # Extract details from the YouTube object
+        video_details = {
+            'title': yt.title,
+            'description': yt.description,
+            'thumbnail': yt.thumbnail_url,
+            'duration': yt.length,  # Duration in seconds
+            'id': yt.video_id,
+            'source_url': video_url
         }
-        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            info_dict = ydl.extract_info(video_url, download=False)
-            return {
-                'title': info_dict.get('title'),
-                'description': info_dict.get('description'),
-                'thumbnail': info_dict.get('thumbnail'),
-                'duration': info_dict.get('duration'),
-                'id': info_dict.get('id'),
-                'source_url': video_url,
-            }
+
+        return video_details
     except Exception as e:
         return None
 
@@ -55,21 +55,21 @@ def fetch_video_details():
     shortened_audio = shorten_url(api_audio_url) or api_audio_url  # Fall back to the original if shortening fails
     shortened_video = shorten_url(api_video_url) or api_video_url  # Fall back to the original if shortening fails
 
-    # Fetch additional video details using yt-dlp
-    video_details_yt_dlp = fetch_video_details_yt_dlp(video_url)
+    # Fetch video details using pytube
+    video_details_pytube = fetch_video_details_pytube(video_url)
 
-    if video_details_yt_dlp is None:
+    if video_details_pytube is None:
         return jsonify({"error": "Failed to fetch video details"}), 500
 
     # Return the final result by merging video details
     return jsonify({
         "creator": "Eypz",  # Set the creator name
-        "title": video_details_yt_dlp['title'],
-        "description": video_details_yt_dlp['description'],
-        "thumbnail": video_details_yt_dlp['thumbnail'],
-        "duration": video_details_yt_dlp['duration'],
-        "id": video_details_yt_dlp['id'],
-        "source_url": video_details_yt_dlp['source_url'],
+        "title": video_details_pytube['title'],
+        "description": video_details_pytube['description'],
+        "thumbnail": video_details_pytube['thumbnail'],
+        "duration": video_details_pytube['duration'],
+        "id": video_details_pytube['id'],
+        "source_url": video_details_pytube['source_url'],
         "download_links": {
             "audio": shortened_audio,
             "video": shortened_video
