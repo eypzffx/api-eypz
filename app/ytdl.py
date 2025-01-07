@@ -39,21 +39,22 @@ def fetch_video_details():
 
         # Extract the relevant details from the 'result' field
         if data['status']:
-            mp3_url = data['result']['mp3']
-            mp4_url = data['result']['mp4']
+            result = data['result']
+            mp3_url = result['mp3']
+            mp4_url = result['mp4']
 
             # Shorten the download URLs
             shortened_mp3 = shorten_url(mp3_url) or mp3_url  # Fall back to original if shortening fails
             shortened_mp4 = shorten_url(mp4_url) or mp4_url  # Fall back to original if shortening fails
 
             video_details = {
-                "creator": "Eypz",  # Set the creator name to "Eypz"
-                "title": data['result']['title'],
-                "description": data['result']['description'],
-                "id": data['result']['id'],
-                "thumbnail": data['result']['thumb'],
-                "source_url": data['result']['source'],
-                "duration": data['result']['duration'],
+                "creator": result.get("creator", "Eypz"),  # Use the creator field if available, otherwise default to "Eypz"
+                "title": result['title'],
+                "description": result['description'],
+                "id": result['id'],
+                "thumbnail": result['thumb'],
+                "source_url": result['source'],
+                "duration": result['duration'],
                 "download_links": {
                     "mp3": shortened_mp3,
                     "mp4": shortened_mp4
