@@ -5,21 +5,6 @@ from pytube import YouTube  # For fetching video details
 # Create a blueprint for YouTube Downloader
 ytdl_bp = Blueprint('ytdl', __name__)
 
-# URL of your URL shortener API
-SHORTENER_API_URL = 'https://combative-sarine-eypz-god-d4cce0fc.koyeb.app/shorten?url='
-
-# Function to shorten URLs using the shortener API
-def shorten_url(url):
-    try:
-        shortener_response = requests.get(SHORTENER_API_URL + url)
-        if shortener_response.status_code == 200:
-            short_data = shortener_response.json()
-            return short_data.get('short_url')  # Get the shortened URL from the response
-        else:
-            return None
-    except Exception as e:
-        return None
-
 # Method to fetch video details using pytube
 def fetch_video_details_pytube(video_url):
     try:
@@ -51,10 +36,6 @@ def fetch_video_details():
     api_audio_url = f"https://api.betabotz.eu.org/api/download/get-YoutubeResult?url={video_url}&type=audio&xky=xT%C2%8CTzK%C2%87N7K%7BS%C2%8CS%C2%82NyMuM"
     api_video_url = f"https://api.betabotz.eu.org/api/download/get-YoutubeResult?url={video_url}&type=video&xky=xT%C2%8CTzK%C2%87N7K%7BS%C2%8CS%C2%82NyMuM"
 
-    # Shorten the URLs
-    shortened_audio = shorten_url(api_audio_url) or api_audio_url  # Fall back to the original if shortening fails
-    shortened_video = shorten_url(api_video_url) or api_video_url  # Fall back to the original if shortening fails
-
     # Fetch video details using pytube
     video_details_pytube = fetch_video_details_pytube(video_url)
 
@@ -71,7 +52,7 @@ def fetch_video_details():
         "id": video_details_pytube['id'],
         "source_url": video_details_pytube['source_url'],
         "download_links": {
-            "audio": shortened_audio,
-            "video": shortened_video
+            "audio": api_audio_url,
+            "video": api_video_url
         }
     })
