@@ -19,6 +19,11 @@ def shorten_url(url):
     except Exception as e:
         return None
 
+# Chrome user-agent string to be used in requests
+headers = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+}
+
 @ytdl_bp.route('/ytdl', methods=['GET'])
 def fetch_video_details():
     # Get the YouTube video URL from the query parameter
@@ -30,8 +35,8 @@ def fetch_video_details():
     # Your BetaBotz API URL
     api_url = f"https://api.betabotz.eu.org/api/download/ytmp4?url={video_url}&apikey=eypz-izumi"
 
-    # Fetch the data from the external API
-    response = requests.get(api_url)
+    # Fetch the data from the external API with the headers including the user-agent
+    response = requests.get(api_url, headers=headers)
 
     # Check if the request was successful
     if response.status_code == 200:
