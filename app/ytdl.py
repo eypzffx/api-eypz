@@ -1,40 +1,29 @@
 from flask import Blueprint, request, jsonify
 import requests
 
-# Create a blueprint for YouTube Downloader and IP Whitelisting
-api_bp = Blueprint('api', __name__)
+# Create a blueprint for YouTube Downloader
+ytdl_bp = Blueprint('ytdl', __name__)
 
-# Define the list of allowed IPs (replace with your actual IP or range)
-ALLOWED_IPS = ["<Your Koyeb App IP>"]
+# URL of your URL shortener API
+SHORTENER_API_URL = 'https://combative-sarine-eypz-god-d4cce0fc.koyeb.app/shorten?url='
 
-# URL for fetching public IP
-IP_SERVICE_URL = "https://api.ipify.org"  # You can use other services like ifconfig.me
-
-# Route to get the public IP address of the app
-@api_bp.route('/get_ip', methods=['GET'])
-def get_ip():
+# Function to shorten URLs using the shortener API
+def shorten_url(url):
     try:
-        # Use an external service to get the public IP address
-        response = requests.get(IP_SERVICE_URL)
-        if response.status_code == 200:
-            return jsonify({"ip": response.text})  # Return the public IP address
+        shortener_response = requests.get(SHORTENER_API_URL + url)
+        if shortener_response.status_code == 200:
+            short_data = shortener_response.json()
+            return short_data.get('short_url')  # Get the shortened URL from the response
         else:
-            return jsonify({"error": "Could not retrieve IP"}), 500
+            return None
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return None
 
-# Route for the /ytdl API with IP whitelisting
-@api_bp.route('/ytdl', methods=['GET'])
+@ytdl_bp.route('/ytdl', methods=['GET'])
 def fetch_video_details():
-    # Get the client's IP address
-    client_ip = request.remote_addr
-
-    # Check if the client IP is whitelisted
-    if client_ip not in ALLOWED_IPS:
-        return jsonify({"error": "Forbidden: Your IP is not whitelisted"}), 403
-
     # Get the YouTube video URL from the query parameter
     video_url = request.args.get('url')
+    
     if not video_url:
         return jsonify({"error": "Missing video URL"}), 400
 
@@ -75,16 +64,3 @@ def fetch_video_details():
             return jsonify({"error": "Failed to fetch video details"}), 500
     else:
         return jsonify({"error": "Failed to fetch data from API"}), response.status_code
-
-
-# Function to shorten URLs using the shortener API
-def shorten_url(url):
-    try:
-        shortener_response = requests.get(f'https://combative-sarine-eypz-god-d4cce0fc.koyeb.app/shorten?url={url}')
-        if shortener_response.status_code == 200:
-            short_data = shortener_response.json()
-            return short_data.get('short_url')  # Get the shortened URL from the response
-        else:
-            return None
-    except Exception as e:
-        return None
