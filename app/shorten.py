@@ -27,7 +27,9 @@ def shorten_url():
     try:
         short_code = generate_random_string()
         custom_urls[short_code] = long_url
-        short_url = f"{request.host_url}{short_code}"
+        
+        # Force the short URL to use eypz-dev.vercel.app
+        short_url = f"https://eypz-dev.vercel.app/{short_code}"
         
         return jsonify({'short_url': short_url}), 200
     except Exception as e:
